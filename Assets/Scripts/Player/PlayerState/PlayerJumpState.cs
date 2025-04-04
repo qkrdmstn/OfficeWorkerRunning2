@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class PlayerJumpState : PlayerState
 {
+
+    private int jumpLayer;
+    private int playerLayer;
+
     private Vector3 startPos;
     private Vector3 endPos;
     private Vector3 moveDir;
@@ -17,11 +21,13 @@ public class PlayerJumpState : PlayerState
     private float vy;
     private float gravity;
 
-    private bool isReturning = false;
 
     public PlayerJumpState(PlayerController controller, Rigidbody rb, StateMachine stateMachine)
         : base(controller, rb, stateMachine)
     {
+        jumpLayer = controller.jumpLayer;
+        playerLayer = controller.playerLayer;
+
         jumpDistance = controller.jumpDistance;
         jumpHeight = controller.jumpHeight;
         moveSpeed = controller.moveSpeed;
@@ -32,7 +38,7 @@ public class PlayerJumpState : PlayerState
         base.Enter();
 
         controller.isJump = true;
-        isReturning = false;
+        controller.ChangeCollisionLayer(jumpLayer);
 
         // 초기 위치 설정
         startPos = controller.transform.position;
@@ -52,19 +58,6 @@ public class PlayerJumpState : PlayerState
         base.Update();
 
         float dt = Time.deltaTime;
-
-        // 회귀 입력 처리
-        if (!isReturning && controller.moveDir < 0 && Input.GetKeyDown(KeyCode.UpArrow))
-        {
-            isReturning = true;
-
-            // 방향 및 거리, 속도 반전
-            (startPos, endPos) = (endPos, startPos); // swap
-            curDist = jumpDistance - curDist;
-            controller.ToggleMoveDir();              // 내부 moveDir 플래그 반전
-            moveDir = controller.GetMoveDir();       // 실제 방향 업데이트
-            vy *= -1;                                // 수직 속도 반전
-        }
 
         // 이동 거리, 속도 업데이트
         curDist += moveSpeed * dt;
@@ -91,6 +84,19 @@ public class PlayerJumpState : PlayerState
     {
         base.Exit();
         controller.isJump = false;
-        isReturning = false;
+        controller.ChangeCollisionLayer(playerLayer);
+    }
+
+    public void RecoverMoveDir()
+    {
+        if (controller.moveDir < 0 && !controller.isBump)
+        {
+            // 방향 및 거리, 속도 반전
+            (startPos, endPos) = (endPos, startPos); // swap
+            curDist = jumpDistance - curDist;
+            controller.ToggleMoveDir();              // 내부 moveDir 플래그 반전
+            moveDir = controller.GetMoveDir();       // 실제 방향 업데이트
+            vy *= -1;                                // 수직 속도 반전
+        }
     }
 }

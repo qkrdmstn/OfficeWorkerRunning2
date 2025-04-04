@@ -4,7 +4,11 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - Bumper
+  - Coffee
+  - FileStack
+  - Money
+  - PostIt
+  - Mail
   layers:
   - Default
   - TransparentFX
@@ -12,8 +16,8 @@ TagManager:
   - 
   - Water
   - UI
-  - 
-  - 
+  - Obstacle
+  - PlayerJump
   - 
   - 
   - 

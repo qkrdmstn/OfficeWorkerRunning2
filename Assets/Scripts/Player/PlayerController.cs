@@ -14,14 +14,17 @@ public enum Command
 
 public class PlayerController : MonoBehaviour
 {
-    public int moveDir = 1;
-    public int facingDir = 0;
     public Vector3[] dir = { Vector3.forward, Vector3.right, Vector3.back, Vector3.left };
 
     [Header("Move info")]
+    public int moveDir = 1;
+    public int facingDir = 0;
     public float moveSpeed;
     public float rotateSpeed;
 
+    [Header("Jump info")]
+    public int playerLayer;
+    public int jumpLayer;
     public float jumpDistance;
     public float jumpHeight;
     public float jumpDuration;
@@ -30,8 +33,8 @@ public class PlayerController : MonoBehaviour
     public bool isBump;
     public bool isJump;
     public bool isRotate;
-    
-    public Command curCommand { get; set; }
+
+    public Command curCommand; 
     private Rigidbody rb { get; set; }
 
     #region State
@@ -39,18 +42,21 @@ public class PlayerController : MonoBehaviour
     public PlayerMoveState playerMoveState { get; private set; }
     public PlayerRotateState playerRotateState { get; private set; }
     public PlayerJumpState playerJumpState { get; private set; }
+    public PlayerDeadState playerDeadState { get; private set; }
 
     #endregion 
 
     void Awake()
     {
         rb = GetComponent<Rigidbody> ();
+        playerLayer = LayerMask.NameToLayer("Player");
+        jumpLayer = LayerMask.NameToLayer("PlayerJump");
 
         stateMachine = new StateMachine();
         playerMoveState = new PlayerMoveState(this, rb, stateMachine);
         playerRotateState = new PlayerRotateState(this, rb, stateMachine);
         playerJumpState = new PlayerJumpState(this, rb, stateMachine);
-
+        playerDeadState = new PlayerDeadState(this, rb, stateMachine);
     }
 
     private void Start()
@@ -64,31 +70,72 @@ public class PlayerController : MonoBehaviour
     {
         stateMachine.currentState.Update();
 
-        InputControl();
-
-    }
-
-    public void SetVelocity(float _speed)
-    {
-        rb.velocity = dir[facingDir] * _speed;
-    }
-
-    public void SetVelocity(Vector3 _velocity)
-    {
-        rb.velocity = _velocity;
+        //InputControl();
     }
 
     void InputControl()
     {
-        if(Input.GetKeyDown(KeyCode.LeftArrow))
+        if (Input.GetKeyDown(KeyCode.LeftArrow))
             curCommand = Command.ROTATE_LEFT;
         if (Input.GetKeyDown(KeyCode.RightArrow))
             curCommand = Command.ROTATE_RIGHT;
         if (!isRotate && !isJump && Input.GetKeyDown(KeyCode.Space))
             stateMachine.ChangeState(playerJumpState);
+
+        if (Input.GetKeyDown(KeyCode.UpArrow) && isJump)
+            playerJumpState.RecoverMoveDir();
+        else if (Input.GetKeyDown(KeyCode.UpArrow) && !isRotate)
+            playerMoveState.RecoverMoveDir();
     }
 
-    public State CheckCommand()
+    private void OnTriggerEnter(Collider collision)
+    {
+        if (collision.CompareTag("PostIt"))
+        {
+            isBump = true;
+            ToggleMoveDir();
+            stateMachine.ChangeState(playerMoveState);
+        }
+        else if(collision.CompareTag("Money"))
+        {
+
+        }
+        else if (collision.CompareTag("FileStack"))
+        {
+            stateMachine.ChangeState(playerDeadState);
+        }
+        else if (collision.CompareTag("Mail"))
+        {
+
+        }
+        else if (collision.CompareTag("Coffee"))
+        {
+
+        }
+
+
+    }
+
+    public Vector3 GetNextGridCenter()
+    {
+        Vector3 pos = transform.position;
+        Vector2Int index = StageManager.GetGridIndex(pos);
+
+        Vector3 curMoveDir = GetMoveDir();
+        if (isBump)
+        {
+            if (curMoveDir.x < 0.0f)
+                index.x++;
+            if (curMoveDir.z < 0.0f)
+                index.y++;
+        }
+
+        int nextX = index.x + Mathf.RoundToInt(curMoveDir.x);
+        int nextZ = index.y + Mathf.RoundToInt(curMoveDir.z);
+        return StageManager.GetGridPos(nextX, pos.y, nextZ);
+    }
+
+    public State GetStateByCurrentCommand()
     {
         switch (curCommand)
         {
@@ -112,40 +159,18 @@ public class PlayerController : MonoBehaviour
         return moveDir * dir[facingDir];
     }
 
-    public Vector3 GetNextGridCenter()
+    public void SetVelocity(float _speed)
     {
-        Vector3 pos = transform.position;
-        float d = GameManager.instance.dist;
-        Vector3 curMoveDir = GetMoveDir();
-
-        int xIndex = Mathf.FloorToInt((pos.x - d / 2f) / d);
-        int zIndex = Mathf.FloorToInt((pos.z - d / 2f) / d);
-        
-        if(isBump)
-        {
-            if (curMoveDir.x < 0.0f)
-                xIndex++;
-            if (curMoveDir.z < 0.0f)
-                zIndex++;
-        }
-
-        int nextX = xIndex + Mathf.RoundToInt(curMoveDir.x);
-        int nextZ = zIndex + Mathf.RoundToInt(curMoveDir.z);
-
-        return new Vector3(
-            d / 2f + nextX * d,
-            pos.y,
-            d / 2f + nextZ * d
-        );
+        rb.velocity = dir[facingDir] * _speed;
     }
 
-    private void OnTriggerEnter(Collider collision)
+    public void SetVelocity(Vector3 _velocity)
     {
-        if(collision.CompareTag("Bumper"))
-        {
-            isBump = true;
-            ToggleMoveDir();
-            stateMachine.ChangeState(playerMoveState);
-        }
+        rb.velocity = _velocity;
+    }
+
+    public void ChangeCollisionLayer(int _layer)
+    {
+        gameObject.layer = _layer;
     }
 }

@@ -1,0 +1,136 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using Unity.VisualScripting;
+using UnityEngine;
+using static UnityEditor.ShaderGraph.Internal.KeywordDependentCollection;
+using static UnityEngine.Rendering.VolumeComponent;
+
+public enum MapData
+{
+    MONEY = 1,
+    FILE_STACK,
+    MAIL,
+    POSTIT,
+    COFFEE,
+    START_POS,
+    START_DIR,
+    DEAD_MONEY,
+}
+
+public class StageManager : MonoBehaviour
+{
+    [Header("Map info")]
+    public const int MAP_SIZE = 29;
+    public const float gridDist = 2.0f;
+    public MapData[,] mapData = new MapData[MAP_SIZE, MAP_SIZE];
+
+    [Header("Stage info")]
+    [SerializeField]
+    private int timeLimit;
+    public Transform player;
+
+    [Header("Item Info")]
+    public GameObject[] itemPrefabs;
+    public GameObject[] itemParents;
+    public float itemYPos;
+    
+    // Start is called before the first frame update
+    void Start()
+    {
+        player = GameObject.FindGameObjectWithTag("Player").GetComponent<Transform>();
+        LoadStageData();
+        GenrateStage();
+    }
+
+    private void LoadStageData()
+    {
+        //Stage Load
+        TextAsset stageData = Resources.Load<TextAsset>("Stage/Stage" + GameManager.instance.stageIndex); //Load Stage.text
+
+        string[] lines = stageData.text.Split('\n');
+
+        for (int i = 0; i < MAP_SIZE; i++) //Split stage data
+        {
+            for (int j = 0; j < MAP_SIZE; j++)
+            {
+                int data = int.Parse(lines[i][j].ToString());
+                mapData[i, j] = (MapData)data;
+            }
+        }
+        timeLimit = int.Parse(lines[29]); //Last line is TimeLimit
+    }
+
+    private void GenrateStage()
+    {
+        for (int i = 0; i < MAP_SIZE; i++) //Create Stage
+        {
+            for (int j = 0; j < MAP_SIZE; j++)
+            {
+                //Todo Item마다 높이 다르게
+                if (mapData[i, j] >= MapData.MONEY && mapData[i, j] <= MapData.COFFEE)
+                {
+                    GameObject item = Instantiate(itemPrefabs[(int)mapData[i, j] - 1], GetGridPos(i, itemYPos, j), Quaternion.identity);
+                    item.name = "(" + i + "," + j + ")";
+                    item.transform.parent = itemParents[(int)mapData[i, j] - 1].transform;
+                }
+                else if (mapData[i, j] == MapData.START_POS)
+                {
+                    //플레이어 시작 위치 설정
+                    Vector3 playerPos = GetGridPos(i, 0.0f, j);
+                    player.position = playerPos;
+
+                    //플레이어 시작 방향 설정
+                    SetStartDir(i, j);
+
+                }
+
+            }
+        }
+    }
+
+    private void SetStartDir(int i, int j)
+    {
+        //플레이어 시작 방향을 알려주는 MAP_DATA는 항상 플레이어의 상하좌우에 존재
+        int[] dx = new int[4] { 0, 1, 0, -1 };
+        int[] dy = new int[4] { 1, 0, -1, 0 };
+        for (int dir = 0; dir < 4; dir++)
+        {
+            int nx = i + dx[dir];
+            int ny = j + dy[dir];
+            if (mapData[nx, ny] == MapData.START_DIR)
+            {
+                Vector3 playerDir = GetGridPos(nx, 0.0f, ny);
+                player.LookAt(playerDir);
+                player.GetComponent<PlayerController>().facingDir = dir;
+                return;
+            }
+        }
+        Debug.LogWarning("Player Direction Not Found!");
+        return;
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        
+    }
+
+    public static float GetGridDist()
+    {
+        return gridDist;
+    }
+
+    public static Vector3 GetGridPos(int x, float y, int z)
+    {
+        return new Vector3(x * gridDist + gridDist / 2, y, z * gridDist + gridDist / 2);
+    }
+
+
+    public static Vector2Int GetGridIndex(Vector3 pos)
+    {
+        int xIndex = Mathf.FloorToInt((pos.x - gridDist / 2f) / gridDist);
+        int zIndex = Mathf.FloorToInt((pos.z - gridDist / 2f) / gridDist);
+        return new Vector2Int(xIndex, zIndex);
+    }
+}

@@ -21,24 +21,30 @@ public class PlayerMoveState : PlayerState
     {
         base.Update();
 
-        if (Input.GetKey(KeyCode.UpArrow) && !controller.isBump && controller.moveDir < 0)
-        {
-            controller.ToggleMoveDir();
-            stateMachine.ChangeState(controller.playerMoveState);
-        }
-
         controller.SetVelocity(controller.GetMoveDir() * controller.moveSpeed);
+
+        //목표 위치에 도달하면, 다음 명령 확인
         if (Vector3.Distance(controller.transform.position, nextGridCenter) < 0.1f)
         {
             controller.isBump = false;
             controller.transform.position = nextGridCenter;
-            stateMachine.ChangeState(controller.CheckCommand());
+            controller.SetVelocity(Vector3.zero);
+            stateMachine.ChangeState(controller.GetStateByCurrentCommand());
         }
     }
 
     public override void Exit()
     {
         base.Exit();
-        controller.SetVelocity(Vector3.zero);
+
+    }
+
+    public void RecoverMoveDir()
+    {
+        if (!controller.isBump && controller.moveDir < 0)
+        {
+            controller.ToggleMoveDir();
+            stateMachine.ChangeState(controller.playerMoveState);
+        }
     }
 }

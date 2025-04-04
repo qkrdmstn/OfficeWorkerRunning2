@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
+    public int stageIndex;
     public float dist = 3.0f;
 
     public static GameManager instance;
@@ -28,5 +29,10 @@ public class GameManager : MonoBehaviour
     void Update()
     {
         
+    }
+
+    public void GameOver()
+    {
+        Debug.Log("GameOver!!!!");
     }
 }
