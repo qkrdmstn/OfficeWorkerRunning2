@@ -16,17 +16,20 @@ public class CommandInvoker : MonoBehaviour
 
     public void InputHadle()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
-            ExecuteCommand(new JumpCommand());
+        if (!GameManager.instance.isGameOver && !isReplaying)
+        {
+            if (Input.GetKeyDown(KeyCode.Space))
+                ExecuteCommand(new JumpCommand());
 
-        if (Input.GetKeyDown(KeyCode.LeftArrow))
-            ExecuteCommand(new RotateCommand(Command.ROTATE_LEFT));
+            if (Input.GetKeyDown(KeyCode.LeftArrow))
+                ExecuteCommand(new RotateCommand(Command.ROTATE_LEFT));
 
-        if (Input.GetKeyDown(KeyCode.RightArrow))
-            ExecuteCommand(new RotateCommand(Command.ROTATE_RIGHT));
+            if (Input.GetKeyDown(KeyCode.RightArrow))
+                ExecuteCommand(new RotateCommand(Command.ROTATE_RIGHT));
 
-        if (Input.GetKeyDown(KeyCode.UpArrow))
-            ExecuteCommand(new RecoverDirCommand());
+            if (Input.GetKeyDown(KeyCode.UpArrow))
+                ExecuteCommand(new RecoverDirCommand());
+        }
     }
 
     public void ExecuteCommand(ICommand command)
@@ -63,7 +66,7 @@ public class CommandInvoker : MonoBehaviour
             {
                 if (Mathf.Approximately(replayTime, recordedCommands.Keys[0]))
                 {
-                    Debug.Log($"replay Time : {isReplaying}");
+                    Debug.Log($"replay Time : {replayTime}");
                     Debug.Log($"reply command : {recordedCommands.Values[0]}");
 
                     recordedCommands.Values[0].Execute(player);

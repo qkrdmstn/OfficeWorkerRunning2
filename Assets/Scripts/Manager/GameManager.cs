@@ -5,7 +5,7 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     public int stageIndex;
-    public float dist = 3.0f;
+    public bool isGameOver;
 
     public static GameManager instance;
 
@@ -31,8 +31,14 @@ public class GameManager : MonoBehaviour
         
     }
 
+    public void GameClear()
+    {
+
+    }
+
     public void GameOver()
     {
+        isGameOver = true;
         Debug.Log("GameOver!!!!");
     }
 }

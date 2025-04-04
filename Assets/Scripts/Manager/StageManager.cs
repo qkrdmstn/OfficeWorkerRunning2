@@ -20,33 +20,49 @@ public enum MapData
 
 public class StageManager : MonoBehaviour
 {
+    public static StageManager instance;
+
     [Header("Map info")]
     public const int MAP_SIZE = 29;
     public const float gridDist = 2.0f;
     public MapData[,] mapData = new MapData[MAP_SIZE, MAP_SIZE];
+    public Dictionary<Vector2, GameObject> moneyDictionary = new Dictionary<Vector2, GameObject>();
 
     [Header("Stage info")]
     [SerializeField]
+    private int stageIndex;
     private int timeLimit;
+    public int totalMoney;
+    public int moneyCount;
     public Transform player;
 
     [Header("Item Info")]
     public GameObject[] itemPrefabs;
     public GameObject[] itemParents;
     public float itemYPos;
-    
+
+    void Awake()
+    {
+        if (instance == null)
+            instance = this;
+        else
+            Destroy(gameObject); // 중복 방지
+    }
+
     // Start is called before the first frame update
     void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player").GetComponent<Transform>();
+        stageIndex = GameManager.instance.stageIndex;
         LoadStageData();
-        GenrateStage();
     }
 
     private void LoadStageData()
     {
         //Stage Load
-        TextAsset stageData = Resources.Load<TextAsset>("Stage/Stage" + GameManager.instance.stageIndex); //Load Stage.text
+        if (stageIndex <= 0)
+            return;
+        TextAsset stageData = Resources.Load<TextAsset>("Stage/Stage" + stageIndex); //Load Stage.text
 
         string[] lines = stageData.text.Split('\n');
 
@@ -59,6 +75,8 @@ public class StageManager : MonoBehaviour
             }
         }
         timeLimit = int.Parse(lines[29]); //Last line is TimeLimit
+
+        GenrateStage();
     }
 
     private void GenrateStage()
@@ -73,6 +91,9 @@ public class StageManager : MonoBehaviour
                     GameObject item = Instantiate(itemPrefabs[(int)mapData[i, j] - 1], GetGridPos(i, itemYPos, j), Quaternion.identity);
                     item.name = "(" + i + "," + j + ")";
                     item.transform.parent = itemParents[(int)mapData[i, j] - 1].transform;
+
+                    if (mapData[i,j] == MapData.MONEY)
+                        moneyDictionary.Add(new Vector2Int(i, j), item);
                 }
                 else if (mapData[i, j] == MapData.START_POS)
                 {
@@ -82,9 +103,7 @@ public class StageManager : MonoBehaviour
 
                     //플레이어 시작 방향 설정
                     SetStartDir(i, j);
-
                 }
-
             }
         }
     }
@@ -110,27 +129,38 @@ public class StageManager : MonoBehaviour
         return;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 
-    public static float GetGridDist()
+    public float GetGridDist()
     {
         return gridDist;
     }
 
-    public static Vector3 GetGridPos(int x, float y, int z)
+    public Vector3 GetGridPos(int x, float y, int z)
     {
         return new Vector3(x * gridDist + gridDist / 2, y, z * gridDist + gridDist / 2);
     }
 
-
-    public static Vector2Int GetGridIndex(Vector3 pos)
+    public Vector2Int GetGridIndex(Vector3 pos)
     {
         int xIndex = Mathf.FloorToInt((pos.x - gridDist / 2f) / gridDist);
         int zIndex = Mathf.FloorToInt((pos.z - gridDist / 2f) / gridDist);
         return new Vector2Int(xIndex, zIndex);
+    }
+
+    public void GetMoney(Vector2Int pos)
+    {
+        mapData[pos.x, pos.y] = MapData.DEAD_MONEY;
+        Destroy(moneyDictionary[pos]);
+        moneyCount++;
+    }
+
+    public void GetSurroundedMoney(List<Vector2Int> posList)
+    {
+        foreach (Vector2Int pos in posList)
+        {
+            mapData[pos.x, pos.y] = MapData.DEAD_MONEY;
+            Destroy(moneyDictionary[pos]);
+            moneyCount++;
+        }
     }
 }

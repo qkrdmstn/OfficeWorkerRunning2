@@ -27,7 +27,6 @@ public class PlayerController : MonoBehaviour
     public int jumpLayer;
     public float jumpDistance;
     public float jumpHeight;
-    public float jumpDuration;
 
     [Header("State boolean")]
     public bool isBump;
@@ -75,51 +74,27 @@ public class PlayerController : MonoBehaviour
 
     void InputControl()
     {
-        if (Input.GetKeyDown(KeyCode.LeftArrow))
-            curCommand = Command.ROTATE_LEFT;
-        if (Input.GetKeyDown(KeyCode.RightArrow))
-            curCommand = Command.ROTATE_RIGHT;
-        if (!isRotate && !isJump && Input.GetKeyDown(KeyCode.Space))
-            stateMachine.ChangeState(playerJumpState);
-
-        if (Input.GetKeyDown(KeyCode.UpArrow) && isJump)
-            playerJumpState.RecoverMoveDir();
-        else if (Input.GetKeyDown(KeyCode.UpArrow) && !isRotate)
-            playerMoveState.RecoverMoveDir();
-    }
-
-    private void OnTriggerEnter(Collider collision)
-    {
-        if (collision.CompareTag("PostIt"))
+        if (!GameManager.instance.isGameOver)
         {
-            isBump = true;
-            ToggleMoveDir();
-            stateMachine.ChangeState(playerMoveState);
-        }
-        else if(collision.CompareTag("Money"))
-        {
+            if (Input.GetKeyDown(KeyCode.LeftArrow))
+                curCommand = Command.ROTATE_LEFT;
+            if (Input.GetKeyDown(KeyCode.RightArrow))
+                curCommand = Command.ROTATE_RIGHT;
+            if (!isRotate && !isJump && Input.GetKeyDown(KeyCode.Space))
+                stateMachine.ChangeState(playerJumpState);
 
+            if (Input.GetKeyDown(KeyCode.UpArrow) && isJump)
+                playerJumpState.RecoverMoveDir();
+            else if (Input.GetKeyDown(KeyCode.UpArrow) && !isRotate)
+                playerMoveState.RecoverMoveDir();
         }
-        else if (collision.CompareTag("FileStack"))
-        {
-            stateMachine.ChangeState(playerDeadState);
-        }
-        else if (collision.CompareTag("Mail"))
-        {
-
-        }
-        else if (collision.CompareTag("Coffee"))
-        {
-
-        }
-
 
     }
 
     public Vector3 GetNextGridCenter()
     {
         Vector3 pos = transform.position;
-        Vector2Int index = StageManager.GetGridIndex(pos);
+        Vector2Int index = StageManager.instance.GetGridIndex(pos);
 
         Vector3 curMoveDir = GetMoveDir();
         if (isBump)
@@ -132,7 +107,7 @@ public class PlayerController : MonoBehaviour
 
         int nextX = index.x + Mathf.RoundToInt(curMoveDir.x);
         int nextZ = index.y + Mathf.RoundToInt(curMoveDir.z);
-        return StageManager.GetGridPos(nextX, pos.y, nextZ);
+        return StageManager.instance.GetGridPos(nextX, pos.y, nextZ);
     }
 
     public State GetStateByCurrentCommand()

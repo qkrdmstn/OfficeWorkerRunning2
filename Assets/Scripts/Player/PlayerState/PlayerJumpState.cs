@@ -75,7 +75,7 @@ public class PlayerJumpState : PlayerState
             controller.transform.position = landPos;
             controller.SetVelocity(Vector3.zero);
 
-            controller.curCommand = Command.MOVE;
+            //controller.curCommand = Command.MOVE;
             stateMachine.ChangeState(controller.playerMoveState);
         }
     }
