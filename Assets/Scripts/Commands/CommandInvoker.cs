@@ -2,17 +2,81 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using UnityEngine;
+using UnityEngine.AI;
+using UnityEngine.UIElements;
 
 public class CommandInvoker : MonoBehaviour
 {
+    public Controller[] controller;
 
+    [Header("Recording info")]
     public bool isRecording;
+    [SerializeField] private int recordingFrame;
+
+    [Header("Replaying info")]
     public bool isReplaying;
-    private SortedList<float, ICommand> recordedCommands = new SortedList<float, ICommand>();
-    public PlayerController player;
-    private float recordingTime;
-    private float replayTime;
+    [SerializeField] private int replayFrame;
+    [SerializeField] private int replayIdx;
+
+    [Header("Boss info")]
+    [SerializeField] private bool isBoss;
+    [SerializeField] private int bossFrame;
+    [SerializeField] private int delayFrame;
+    [SerializeField] private int commandIdx;
+
+    [SerializeField] private SortedList<int, ICommand> recordedCommands = new SortedList<int, ICommand>();
+    [SerializeField] private Queue<ControllerSnapshot> snapshots = new Queue<ControllerSnapshot>();
+    [SerializeField] private int snapshotInterval;
+
+    private void Update()
+    {
+        InputHadle();
+    }
+
+    private void FixedUpdate()
+    {
+        if (isRecording)
+        {
+            recordingFrame++;
+            SaveSnapshot();
+        }
+
+        if (isReplaying)
+        {
+            replayFrame++;
+
+            if (recordedCommands.Count > 0 && recordedCommands.Count > replayIdx)
+            {
+                if (replayFrame == recordedCommands.Keys[replayIdx])
+                {
+                    Debug.Log($"replay Time : {replayFrame}");
+                    Debug.Log($"reply command : {recordedCommands.Values[replayIdx]}");
+
+                    recordedCommands.Values[replayIdx++].Execute(controller[(int)ControllerType.PLAYER]);
+                    //recordedCommands.RemoveAt(0);
+                }
+            }
+            else
+            {
+                isReplaying = false;
+            }
+        }
+
+        if(isBoss)
+        {
+            bossFrame++;
+
+            if (recordedCommands.Count > 0 && recordedCommands.Count > commandIdx)
+            {
+                if (bossFrame == recordedCommands.Keys[commandIdx])
+                {
+                    recordedCommands.Values[commandIdx++].Execute(controller[(int)ControllerType.BOSS_AI]);
+                }
+            }
+        }
+    }
 
     public void InputHadle()
     {
@@ -30,17 +94,22 @@ public class CommandInvoker : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.UpArrow))
                 ExecuteCommand(new RecoverDirCommand());
         }
+
+        if (Input.GetKeyDown(KeyCode.A))
+        {
+            StartBossPlayback();
+        }
     }
 
     public void ExecuteCommand(ICommand command)
     {
-        command.Execute(player);
+        command.Execute(controller[(int)ControllerType.PLAYER]);
 
         if (isRecording)
         {
-            recordedCommands.Add(recordingTime, command);
+            recordedCommands.Add(recordingFrame, command);
             //string str = "";
-            //for(int i=0; i< recordedCommands.Count; i++)
+            //for (int i = 0; i < recordedCommands.Count; i++)
             //{
             //    str += recordedCommands.ElementAt(i).ToString() + " ";
             //}
@@ -48,35 +117,41 @@ public class CommandInvoker : MonoBehaviour
         }
     }
 
-    private void Update()
+    private void SaveSnapshot()
     {
-        InputHadle();
+        if (recordingFrame % snapshotInterval == 0)
+        {
+            var player = controller[(int)ControllerType.PLAYER];
+            snapshots.Enqueue(new ControllerSnapshot(recordingFrame, player));
+
+            if (snapshots.Count > delayFrame)
+                snapshots.Dequeue();
+        }
     }
 
-    private void FixedUpdate()
+    public void StartBossPlayback()
     {
-        if (isRecording)
-            recordingTime += Time.fixedDeltaTime;
+        isBoss = true;
+        bossFrame = recordingFrame - delayFrame;
 
-        if (isReplaying)
+        //sanpshot에서 복원
+        ControllerSnapshot snapshot = snapshots.Dequeue();
+        snapshot.PasteToController(controller[(int)ControllerType.BOSS_AI]);
+        
+        //delay 프레임에 가장 가까운 명령어 찾기
+        commandIdx = recordedCommands.Count;
+        for (int i = 0; i < recordedCommands.Count; i++)
         {
-            replayTime += Time.fixedDeltaTime;
-
-            if (recordedCommands.Any())
+            if (recordedCommands.Keys[i] >= bossFrame)
             {
-                if (Mathf.Approximately(replayTime, recordedCommands.Keys[0]))
-                {
-                    Debug.Log($"replay Time : {replayTime}");
-                    Debug.Log($"reply command : {recordedCommands.Values[0]}");
-
-                    recordedCommands.Values[0].Execute(player);
-                    recordedCommands.RemoveAt(0);
-                }
-            }
-            else
-            {
-                isReplaying = false;
+                commandIdx = i;
+                break;
             }
         }
+    }
+
+    public void StopBoss()
+    {
+        isBoss = false;
     }
 }

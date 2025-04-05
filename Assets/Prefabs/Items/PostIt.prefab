@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8392330327073044513}
   - component: {fileID: 8338019462051550449}
+  - component: {fileID: 7204505484841727019}
   m_Layer: 6
   m_Name: PostIt
   m_TagString: PostIt
@@ -55,6 +56,19 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.97972935, y: 1, z: 0.2225951}
   m_Center: {x: 0.010135323, y: 0, z: -0.01998812}
+--- !u!114 &7204505484841727019
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7729697409065900195}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7afa327668cf8194a8e2049740496cc1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rotateSpeed: 150
 --- !u!1001 &503035289499250295
 PrefabInstance:
   m_ObjectHideFlags: 0

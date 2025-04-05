@@ -2,13 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerState : State
+public class ControllerState : State
 {
-    public static PlayerController controller;
-    public static Rigidbody rb;
-    public static StateMachine stateMachine;
+    protected Controller controller;
+    protected Rigidbody rb;
+    protected StateMachine stateMachine;
 
-    public PlayerState(PlayerController _controller, Rigidbody _rb, StateMachine _stateMachine)
+    public ControllerState(Controller _controller, Rigidbody _rb, StateMachine _stateMachine)
     {
         controller = _controller;
         rb = _rb;

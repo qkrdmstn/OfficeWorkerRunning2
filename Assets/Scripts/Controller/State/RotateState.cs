@@ -2,11 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerRotateState : PlayerState
+public class RotateState : ControllerState
 {
     Quaternion targetRotation;
     private int nextDir;
-    public PlayerRotateState(PlayerController _controller, Rigidbody _rb, StateMachine _stateMachine) : base(_controller, _rb, _stateMachine)
+    public RotateState(Controller _controller, Rigidbody _rb, StateMachine _stateMachine) : base(_controller, _rb, _stateMachine)
     {
 
     }
@@ -16,6 +16,7 @@ public class PlayerRotateState : PlayerState
         base.Enter();
 
         controller.isRotate = true;
+        controller.SetVelocity(Vector3.zero);
         if (controller.curCommand == Command.ROTATE_LEFT)
             nextDir = controller.facingDir + 3;
         else
@@ -23,7 +24,7 @@ public class PlayerRotateState : PlayerState
         nextDir %= 4;
 
         // 목표 방향을 향하는 회전
-        targetRotation = Quaternion.LookRotation(controller.dir[nextDir]);
+        targetRotation = Quaternion.LookRotation(Controller.dir[nextDir]);
     }
 
     public override void Update()
@@ -34,10 +35,10 @@ public class PlayerRotateState : PlayerState
         Quaternion currentRotation = controller.transform.rotation;
 
         // 실제 회전 적용
-        controller.transform.rotation = Quaternion.RotateTowards(currentRotation, targetRotation, controller.rotateSpeed * Time.deltaTime);
+        controller.transform.rotation = Quaternion.RotateTowards(currentRotation, targetRotation, controller.rotateSpeed * Time.fixedDeltaTime);
 
         if (Quaternion.Angle(controller.transform.rotation, targetRotation) <= 0.05f)
-            stateMachine.ChangeState(controller.playerMoveState);
+            stateMachine.ChangeState(controller.moveState);
     }
 
     public override void Exit()

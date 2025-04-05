@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8864235613217409616}
   - component: {fileID: 1800445212942867540}
+  - component: {fileID: 7147356283539965725}
   m_Layer: 0
   m_Name: FileStack
   m_TagString: FileStack
@@ -54,6 +55,19 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1.8569766, y: 1.5788101, z: 1.1797225}
   m_Center: {x: 0.041847765, y: -0.26138693, z: -0.08986133}
+--- !u!114 &7147356283539965725
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7899003272801236040}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 21c004fb64b321a41a8585c2ddeb670a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rotateSpeed: 0
 --- !u!1001 &8484895686803700587
 PrefabInstance:
   m_ObjectHideFlags: 0

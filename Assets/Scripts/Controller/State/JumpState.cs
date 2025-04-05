@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerJumpState : PlayerState
+public class JumpState : ControllerState
 {
 
     private int jumpLayer;
@@ -22,7 +22,7 @@ public class PlayerJumpState : PlayerState
     private float gravity;
 
 
-    public PlayerJumpState(PlayerController controller, Rigidbody rb, StateMachine stateMachine)
+    public JumpState(Controller controller, Rigidbody rb, StateMachine stateMachine)
         : base(controller, rb, stateMachine)
     {
         jumpLayer = controller.jumpLayer;
@@ -57,7 +57,7 @@ public class PlayerJumpState : PlayerState
     {
         base.Update();
 
-        float dt = Time.deltaTime;
+        float dt = Time.fixedDeltaTime;
 
         // 이동 거리, 속도 업데이트
         curDist += moveSpeed * dt;
@@ -76,7 +76,7 @@ public class PlayerJumpState : PlayerState
             controller.SetVelocity(Vector3.zero);
 
             //controller.curCommand = Command.MOVE;
-            stateMachine.ChangeState(controller.playerMoveState);
+            stateMachine.ChangeState(controller.moveState);
         }
     }
 

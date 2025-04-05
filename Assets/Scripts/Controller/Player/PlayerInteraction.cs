@@ -11,9 +11,10 @@ public class PlayerInteraction : MonoBehaviour
     private MapData[,] mapData;
     private int[] dx = { -1, -1, 0, 1, 1, 1, 0, -1 };
     private int[] dy = { 0, 1, 1, 1, 0, -1, -1, -1 };
-    bool findEmpty = false; //Empty is Goal
 
-    public PlayerController player;
+    [SerializeField] private PlayerController player;
+    [SerializeField] private BossController boss;
+    [SerializeField] private CoffeeEffectManager coffeeEffectManager;
 
     // Start is called before the first frame update
     void Start()
@@ -35,7 +36,6 @@ public class PlayerInteraction : MonoBehaviour
 
             if (mapData[x, y] == MapData.MONEY)
             {
-                
                 StageManager.instance.GetMoney(new Vector2Int(x, y));
                 BFS(x, y);
             }
@@ -44,20 +44,14 @@ public class PlayerInteraction : MonoBehaviour
         {
             player.isBump = true;
             player.ToggleMoveDir();
-            player.stateMachine.ChangeState(player.playerMoveState);
+            player.stateMachine.ChangeState(player.moveState);
         }
         else if (collision.CompareTag("FileStack"))
-        {
-            player.stateMachine.ChangeState(player.playerDeadState);
-        }
+            player.stateMachine.ChangeState(player.deadState);
         else if (collision.CompareTag("Mail"))
-        {
-
-        }
+            boss.StartChase();
         else if (collision.CompareTag("Coffee"))
-        {
-
-        }
+            coffeeEffectManager.TriggerEffect();
     }
 
     private bool OutOfMap(int x, int y, int size)

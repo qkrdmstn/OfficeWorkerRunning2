@@ -4,7 +4,7 @@ using UnityEngine;
 
 public interface ICommand 
 {
-    void Execute(PlayerController player);
-    void Undo(PlayerController player);
+    void Execute(Controller controller);
+    void Undo(Controller controller);
 
 }

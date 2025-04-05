@@ -5,13 +5,13 @@ using UnityEngine;
 public class JumpCommand : ICommand
 {
 
-    public void Execute(PlayerController player)
+    public void Execute(Controller controller)
     {
-        if(!player.isRotate && !player.isJump)
-            player.stateMachine.ChangeState(player.playerJumpState);
+        if(!controller.isRotate && !controller.isJump)
+            controller.stateMachine.ChangeState(controller.jumpState);
     }
 
-    public void Undo(PlayerController player)
+    public void Undo(Controller controller)
     {
     }
 }

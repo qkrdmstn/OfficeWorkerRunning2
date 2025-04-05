@@ -2,11 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerMoveState : PlayerState
+public class MoveState : ControllerState
 {
     private Vector3 nextGridCenter; 
 
-    public PlayerMoveState(PlayerController _controller, Rigidbody _rb, StateMachine _stateMachine) : base(_controller, _rb, _stateMachine)
+    public MoveState(Controller _controller, Rigidbody _rb, StateMachine _stateMachine) : base(_controller, _rb, _stateMachine)
     {
 
     }
@@ -28,7 +28,6 @@ public class PlayerMoveState : PlayerState
         {
             controller.isBump = false;
             controller.transform.position = nextGridCenter;
-            controller.SetVelocity(Vector3.zero);
             stateMachine.ChangeState(controller.GetStateByCurrentCommand());
         }
     }
@@ -44,7 +43,7 @@ public class PlayerMoveState : PlayerState
         if (!controller.isBump && controller.moveDir < 0)
         {
             controller.ToggleMoveDir();
-            stateMachine.ChangeState(controller.playerMoveState);
+            stateMachine.ChangeState(controller.moveState);
         }
     }
 }

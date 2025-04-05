@@ -11,12 +11,12 @@ public class RotateCommand : ICommand
         this.command = _command;
     }
 
-    public void Execute(PlayerController player)
+    public void Execute(Controller controller)
     {
-        player.curCommand = command;
+        controller.curCommand = command;
     }
 
-    public void Undo(PlayerController player)
+    public void Undo(Controller controller)
     {
     }
 }

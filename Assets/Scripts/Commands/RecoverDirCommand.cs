@@ -4,15 +4,15 @@ using UnityEngine;
 
 public class RecoverDirCommand : ICommand
 {
-    public void Execute(PlayerController player)
+    public void Execute(Controller controller)
     {
-        if (player.isJump)
-            player.playerJumpState.RecoverMoveDir();
-        else if (!player.isRotate)
-            player.playerMoveState.RecoverMoveDir();
+        if (controller.isJump)
+            controller.jumpState.RecoverMoveDir();
+        else if (!controller.isRotate)
+            controller.moveState.RecoverMoveDir();
     }
 
-    public void Undo(PlayerController player)
+    public void Undo(Controller controller)
     {
     }
 }

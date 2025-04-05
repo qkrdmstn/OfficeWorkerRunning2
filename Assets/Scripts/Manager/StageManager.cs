@@ -60,7 +60,7 @@ public class StageManager : MonoBehaviour
     private void LoadStageData()
     {
         //Stage Load
-        if (stageIndex <= 0)
+        if (stageIndex < 0)
             return;
         TextAsset stageData = Resources.Load<TextAsset>("Stage/Stage" + stageIndex); //Load Stage.text
 
