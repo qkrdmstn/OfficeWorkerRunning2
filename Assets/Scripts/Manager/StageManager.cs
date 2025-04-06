@@ -8,7 +8,8 @@ using static UnityEngine.Rendering.VolumeComponent;
 
 public enum MapData
 {
-    MONEY = 1,
+    None,
+    MONEY,
     FILE_STACK,
     MAIL,
     POSTIT,
@@ -31,7 +32,7 @@ public class StageManager : MonoBehaviour
     [Header("Stage info")]
     [SerializeField]
     private int stageIndex;
-    private int timeLimit;
+    public int timeLimit;
     public int totalMoney;
     public int moneyCount;
     public Transform player;
@@ -41,12 +42,17 @@ public class StageManager : MonoBehaviour
     public GameObject[] itemParents;
     public float itemYPos;
 
+    [Header("State")]
+    public bool isStageReady;
+
     void Awake()
     {
         if (instance == null)
             instance = this;
         else
             Destroy(gameObject); // 중복 방지
+
+        isStageReady = false;
     }
 
     // Start is called before the first frame update
@@ -93,7 +99,10 @@ public class StageManager : MonoBehaviour
                     item.transform.parent = itemParents[(int)mapData[i, j] - 1].transform;
 
                     if (mapData[i,j] == MapData.MONEY)
+                    {
                         moneyDictionary.Add(new Vector2Int(i, j), item);
+                        totalMoney++;
+                    }
                 }
                 else if (mapData[i, j] == MapData.START_POS)
                 {
@@ -106,6 +115,8 @@ public class StageManager : MonoBehaviour
                 }
             }
         }
+
+        isStageReady = true;
     }
 
     private void SetStartDir(int i, int j)
