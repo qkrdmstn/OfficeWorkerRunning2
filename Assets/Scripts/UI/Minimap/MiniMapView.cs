@@ -37,6 +37,15 @@ public class MiniMapView : MonoBehaviour
         }
     }
 
+    public void GenerateDeadMoneyIcon(Vector3 pos)
+    {
+        GameObject icon = Instantiate(iconPrefab, iconParent.transform);
+        RectTransform tf = icon.GetComponent<RectTransform>();
+        Image img = icon.GetComponent<Image>();
+        tf.anchoredPosition = GetMiniMapPos(pos);
+        img.color = Color.white;
+    }
+
     public Color GetDataColor(MapData data)
     {
         switch (data)

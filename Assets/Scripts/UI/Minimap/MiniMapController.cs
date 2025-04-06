@@ -13,20 +13,10 @@ public class MiniMapController : MonoBehaviour
 
     void Start()
     {
-        StartCoroutine(OnStart());
-    }
+        StageManager.instance.StageLoadCompleted += InitializeMiniMap;
+        StageManager.instance.OnMoneyCollected += HandleMoneyCollected;
 
-    IEnumerator OnStart()
-    {
-        //StageMager의 맵 로드를 기다림
-        yield return new WaitUntil(()=>StageManager.instance != null &&  StageManager.instance.isStageReady); 
 
-        model = new MiniMapModel(playerTransform);
-        view.SetWorldToMapScale(miniMapRect.rect.width / (StageManager.gridDist * (StageManager.MAP_SIZE + 1)));
-
-        //view에서 각 아이템에 대한 미니맵 아이콘 생성
-        for (int i = (int)MapData.MONEY; i <= (int)MapData.COFFEE; i++)
-            view.GenerateIcons((MapData)i, model.GetItemPositionList((MapData)i));
     }
 
     void Update()
@@ -39,6 +29,20 @@ public class MiniMapController : MonoBehaviour
         view.UpdatePlayerIcon(playerPos);
     }
 
+    private void InitializeMiniMap()
+    {
+        model = new MiniMapModel(playerTransform);
+        view.SetWorldToMapScale(miniMapRect.rect.width / (StageManager.gridDist * (StageManager.MAP_SIZE + 1)));
+
+        //view에서 각 아이템에 대한 미니맵 아이콘 생성
+        for (int i = (int)MapData.MONEY; i <= (int)MapData.COFFEE; i++)
+            view.GenerateIcons((MapData)i, model.GetItemPositionList((MapData)i));
+    }
+
+    private void HandleMoneyCollected(Vector3 pos)
+    {
+        view.GenerateDeadMoneyIcon(pos);
+    }
 
 }
 

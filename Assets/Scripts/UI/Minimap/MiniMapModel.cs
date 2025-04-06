@@ -23,11 +23,8 @@ public class MiniMapModel
         {
             for (int j = 0; j < StageManager.MAP_SIZE; j++)
             {
-                Debug.Log(mapData[i, j] + ", pos:  " + StageManager.instance.GetGridPos(i, 0f, j));
                 if (mapData[i,j] == MapData.None || mapData[i, j] == MapData.START_POS || mapData[i, j] == MapData.START_DIR)
                     continue;
-
-                Debug.Log(mapData[i, j] + ", pos:  " + StageManager.instance.GetGridPos(i, 0f, j));
                 itemWorldPos[mapData[i, j]].Add(StageManager.instance.GetGridPos(i, 0f, j));
             }
         }

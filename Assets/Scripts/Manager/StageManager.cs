@@ -42,8 +42,8 @@ public class StageManager : MonoBehaviour
     public GameObject[] itemParents;
     public float itemYPos;
 
-    [Header("State")]
-    public bool isStageReady;
+    public event Action StageLoadCompleted;
+    public event Action<Vector3> OnMoneyCollected;
 
     void Awake()
     {
@@ -51,8 +51,6 @@ public class StageManager : MonoBehaviour
             instance = this;
         else
             Destroy(gameObject); // 중복 방지
-
-        isStageReady = false;
     }
 
     // Start is called before the first frame update
@@ -116,7 +114,7 @@ public class StageManager : MonoBehaviour
             }
         }
 
-        isStageReady = true;
+        StageLoadCompleted.Invoke();
     }
 
     private void SetStartDir(int i, int j)
@@ -163,15 +161,7 @@ public class StageManager : MonoBehaviour
         mapData[pos.x, pos.y] = MapData.DEAD_MONEY;
         Destroy(moneyDictionary[pos]);
         moneyCount++;
-    }
 
-    public void GetSurroundedMoney(List<Vector2Int> posList)
-    {
-        foreach (Vector2Int pos in posList)
-        {
-            mapData[pos.x, pos.y] = MapData.DEAD_MONEY;
-            Destroy(moneyDictionary[pos]);
-            moneyCount++;
-        }
+        OnMoneyCollected.Invoke(GetGridPos(pos.x, 0f, pos.y));
     }
 }

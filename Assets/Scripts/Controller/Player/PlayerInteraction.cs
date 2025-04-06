@@ -115,6 +115,9 @@ public class PlayerInteraction : MonoBehaviour
         }
 
         if (surrounded)
-            StageManager.instance.GetSurroundedMoney(posList);
+        {
+            foreach (Vector2Int pos in posList)
+                StageManager.instance.GetMoney(pos);
+        }
     }
 }
