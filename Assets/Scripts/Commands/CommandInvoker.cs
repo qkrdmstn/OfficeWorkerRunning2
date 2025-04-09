@@ -80,7 +80,7 @@ public class CommandInvoker : MonoBehaviour
 
     public void InputHadle()
     {
-        if (!GameManager.instance.isGameOver && !isReplaying)
+        if (!GameManager.instance.isGameOver && !GameManager.instance.isGameClear && !isReplaying)
         {
             if (Input.GetKeyDown(KeyCode.Space))
                 ExecuteCommand(new JumpCommand());
@@ -93,11 +93,6 @@ public class CommandInvoker : MonoBehaviour
 
             if (Input.GetKeyDown(KeyCode.UpArrow))
                 ExecuteCommand(new RecoverDirCommand());
-        }
-
-        if (Input.GetKeyDown(KeyCode.A))
-        {
-            StartBossPlayback();
         }
     }
 
@@ -115,6 +110,30 @@ public class CommandInvoker : MonoBehaviour
             //}
             //Debug.Log(str);
         }
+    }
+
+    public void OnJumpButtonPressed()
+    {
+        if (!GameManager.instance.isGameOver && !GameManager.instance.isGameClear && !isReplaying)
+            ExecuteCommand(new JumpCommand());
+    }
+
+    public void OnLeftRotateButtonPressed()
+    {
+        if (!GameManager.instance.isGameOver && !GameManager.instance.isGameClear && !isReplaying)
+            ExecuteCommand(new RotateCommand(Command.ROTATE_LEFT));
+    }
+
+    public void OnRightRotateButtonPressed()
+    {
+        if (!GameManager.instance.isGameOver && !GameManager.instance.isGameClear && !isReplaying)
+            ExecuteCommand(new RotateCommand(Command.ROTATE_RIGHT));
+    }
+
+    public void OnMoveButtonPressed()
+    {
+        if (!GameManager.instance.isGameOver && !GameManager.instance.isGameClear && !isReplaying)
+            ExecuteCommand(new RecoverDirCommand());
     }
 
     private void SaveSnapshot()

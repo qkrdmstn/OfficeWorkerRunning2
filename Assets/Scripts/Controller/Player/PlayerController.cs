@@ -22,7 +22,6 @@ public class PlayerController : Controller
     protected override void OnAwake()
     {
         base.OnAwake();
-
     }
 
     protected override void OnStart()

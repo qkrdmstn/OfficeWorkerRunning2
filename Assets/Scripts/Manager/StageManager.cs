@@ -138,7 +138,6 @@ public class StageManager : MonoBehaviour
         return;
     }
 
-
     public float GetGridDist()
     {
         return gridDist;
@@ -163,5 +162,8 @@ public class StageManager : MonoBehaviour
         moneyCount++;
 
         OnMoneyCollected.Invoke(GetGridPos(pos.x, 0f, pos.y));
+
+        if (totalMoney == moneyCount)
+            GameManager.instance.GameClear();
     }
 }
