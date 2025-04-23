@@ -10,12 +10,12 @@ public class TimerController : MonoBehaviour
     private TimerModel model;
     private bool isTimeRunning = false;
 
-    void Start()
+    void Awake()
     {
         StageManager.instance.StageLoadCompleted += InitializeTimerUI;
     }
 
-    void InitializeTimerUI()
+    public void InitializeTimerUI()
     {
         model = new TimerModel(StageManager.instance.timeLimit);
         view.Initialize(model.timeLimit);

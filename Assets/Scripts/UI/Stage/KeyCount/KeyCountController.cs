@@ -9,7 +9,7 @@ public class KeyCountController : MonoBehaviour
     private KeyCountModel model;
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         model = new KeyCountModel();
         StageManager.instance.StageLoadCompleted += UpdateKeyCountUI;

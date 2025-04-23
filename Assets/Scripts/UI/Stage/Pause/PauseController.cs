@@ -13,12 +13,6 @@ public class PauseController : MonoBehaviour
         GameManager.instance.OnResume += InActivePauseUI;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     private void ActivePauseUI()
     {
         pausePanel.SetActive(true);
@@ -27,5 +21,29 @@ public class PauseController : MonoBehaviour
     private void InActivePauseUI()
     {
         pausePanel.SetActive(false);
+    }
+
+    public void OnPauseButtonClicked()
+    {
+        GameManager.instance.Pause(); // ¶Ç´Â ½Ì±ÛÅæ/Find·Î ÂüÁ¶
+    }
+
+    public void OnResumeButtonClicked()
+    {
+        GameManager.instance.Resume();
+    }
+
+    public void OnExitButtonClicked()
+    {
+        GameManager.instance.Exit();
+    }
+
+    void OnDestroy()
+    {
+        if (GameManager.instance != null)
+        {
+            GameManager.instance.OnPause -= ActivePauseUI;
+            GameManager.instance.OnResume -= InActivePauseUI;
+        }
     }
 }

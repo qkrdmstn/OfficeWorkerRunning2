@@ -2,10 +2,18 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+
+public enum SceneName
+{
+    Main,
+    Stage
+}
 
 public class GameManager : MonoBehaviour
 {
     public int stageIndex;
+    public int numOfStage = 30;
     public bool isGameClear;
     public bool isGameOver;
 
@@ -25,28 +33,32 @@ public class GameManager : MonoBehaviour
         DontDestroyOnLoad(this.gameObject);
     }
 
-    // Start is called before the first frame update
-    void Start()
+    public void StartStage()
     {
+        LoadScene(SceneName.Stage);
     }
 
-    // Update is called once per frame
-    void Update()
+    public void LoadScene(SceneName name)
     {
-        
+        string sceneName = name.ToString();
+
+        Time.timeScale = 1.0f;
+        isGameClear = false;
+        isGameOver = false;
+        SceneManager.LoadScene(sceneName);
     }
 
     public void GameClear()
     {
         isGameClear = true;
-        Debug.Log("GameClear!!!!");
+        Time.timeScale = 0.0f;
         OnGameClear.Invoke();
     }
 
     public void GameOver()
     {
         isGameOver = true;
-        Debug.Log("GameOver!!!!");
+        Time.timeScale = 0.0f;
         OnGameOver.Invoke();
     }
 
@@ -54,10 +66,9 @@ public class GameManager : MonoBehaviour
     {
         Time.timeScale = 0.0f;
         OnPause.Invoke();
-
     }
 
-    public void ResumeGame()
+    public void Resume()
     {
         Time.timeScale = 1.0f;
         OnResume.Invoke();
@@ -65,6 +76,18 @@ public class GameManager : MonoBehaviour
 
     public void Exit()
     {
+        LoadScene(SceneName.Main);
+    }
 
+    public void NextStage()
+    {
+        if(stageIndex < numOfStage)
+            stageIndex++;
+        LoadScene(SceneName.Stage);
+    }
+
+    public void StageRestart()
+    {
+        LoadScene(SceneName.Stage);
     }
 }
