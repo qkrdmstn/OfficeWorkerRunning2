@@ -158,7 +158,7 @@ public class StageManager : MonoBehaviour
     public void GetMoney(Vector2Int pos)
     {
         mapData[pos.x, pos.y] = MapData.DEAD_MONEY;
-        Destroy(moneyDictionary[pos]);
+        moneyDictionary[pos].GetComponent<Money>().ChangeColor();
         moneyCount++;
 
         OnMoneyCollected.Invoke(GetGridPos(pos.x, 0f, pos.y));

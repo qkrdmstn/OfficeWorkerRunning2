@@ -5,6 +5,7 @@ using System;
 using UnityEngine.UI;
 using Unity.Mathematics;
 using static UnityEditor.PlayerSettings;
+using UnityEditor.Search;
 
 public class PlayerInteraction : MonoBehaviour
 {
@@ -37,7 +38,7 @@ public class PlayerInteraction : MonoBehaviour
             if (mapData[x, y] == MapData.MONEY)
             {
                 StageManager.instance.GetMoney(new Vector2Int(x, y));
-                BFS(x, y);
+                AroundSearch(x, y);
             }
         }
         else if (collision.CompareTag("PostIt"))
@@ -59,12 +60,9 @@ public class PlayerInteraction : MonoBehaviour
         return (x < 0 || x >= size || y < 0 || y >= size);
     }
 
-    private void BFS(int x, int y)
+    private void AroundSearch(int x, int y)
     {
         const int MAP_SIZE = StageManager.MAP_SIZE;
-        Queue<Vector2Int> queue = new Queue<Vector2Int>();
-        bool[,] visited = new bool[MAP_SIZE, MAP_SIZE];
-
         //탐색 시작 노드 queue에 삽입
         for (int dir = 0; dir < 8; dir++)
         {
@@ -73,21 +71,29 @@ public class PlayerInteraction : MonoBehaviour
 
             if (OutOfMap(nx, ny, MAP_SIZE))
                 continue;
-            if (mapData[nx,ny] == MapData.MONEY)
+            if (mapData[nx, ny] == MapData.MONEY)
             {
-                queue.Enqueue(new Vector2Int(nx,ny));
-                visited[nx, ny] = true;
+                BFS(nx, ny);
             }
         }
-        if (queue.Count == 0)
-            return;
+    }
 
-        bool surrounded = true;
+    private void BFS(int x, int y)
+    {
+        const int MAP_SIZE = StageManager.MAP_SIZE;
+        bool[,] visited = new bool[MAP_SIZE, MAP_SIZE];
+        
+        Queue<Vector2Int> queue = new Queue<Vector2Int>();
+        queue.Enqueue(new Vector2Int(x, y));
+
         List<Vector2Int> posList = new List<Vector2Int>();
-        while (queue.Count > 0 && surrounded)
+        bool start = true;
+        while (queue.Count > 0)
         {
             Vector2Int pos = queue.Dequeue();
-            posList.Add(pos);
+            if (!start)
+                posList.Add(pos);
+            start = false;
 
             for (int dir = 0; dir < 8; dir++)
             {
@@ -96,10 +102,7 @@ public class PlayerInteraction : MonoBehaviour
 
                 //맵 밖으로 나가도 실패
                 if (OutOfMap(nx, ny, MAP_SIZE))
-                {
-                    surrounded = false;
-                    continue;
-                }
+                    return;
                 if (visited[nx, ny])
                     continue;
 
@@ -110,14 +113,11 @@ public class PlayerInteraction : MonoBehaviour
                 }
                 //돈이 아닌 곳을 만나면 실패
                 else if (mapData[nx, ny] != MapData.DEAD_MONEY)
-                    surrounded = false;
+                    return;
             }
         }
 
-        if (surrounded)
-        {
-            foreach (Vector2Int pos in posList)
-                StageManager.instance.GetMoney(pos);
-        }
+        foreach (Vector2Int pos in posList)
+            StageManager.instance.GetMoney(pos);
     }
 }
