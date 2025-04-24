@@ -70,7 +70,6 @@ public class PlayerInteraction : MonoBehaviour
     private void AroundSearch(int x, int y)
     {
         const int MAP_SIZE = StageManager.MAP_SIZE;
-        //탐색 시작 노드 queue에 삽입
         for (int dir = 0; dir < 8; dir++)
         {
             int nx = x + dx[dir];
@@ -80,28 +79,26 @@ public class PlayerInteraction : MonoBehaviour
                 continue;
             if (mapData[nx, ny] == MapData.MONEY)
             {
-                BFS(nx, ny);
+                if(BFS(nx, ny))
+                    break;
             }
         }
     }
 
-    private void BFS(int x, int y)
+    private bool BFS(int x, int y)
     {
         const int MAP_SIZE = StageManager.MAP_SIZE;
         bool[,] visited = new bool[MAP_SIZE, MAP_SIZE];
         
         Queue<Vector2Int> queue = new Queue<Vector2Int>();
         queue.Enqueue(new Vector2Int(x, y));
+        visited[x, y] = true;
 
         List<Vector2Int> posList = new List<Vector2Int>();
-        bool start = true;
         while (queue.Count > 0)
         {
             Vector2Int pos = queue.Dequeue();
-            if (!start)
-                posList.Add(pos);
-            start = false;
-
+            posList.Add(pos);
             for (int dir = 0; dir < 8; dir++)
             {
                 int nx = pos.x + dx[dir];
@@ -109,7 +106,10 @@ public class PlayerInteraction : MonoBehaviour
 
                 //맵 밖으로 나가도 실패
                 if (OutOfMap(nx, ny, MAP_SIZE))
-                    return;
+                    return false;
+                //돈이 아닌 곳을 만나면 실패
+                if (mapData[nx, ny] != MapData.MONEY && mapData[nx, ny] != MapData.DEAD_MONEY)
+                    return false;
                 if (visited[nx, ny])
                     continue;
 
@@ -118,20 +118,16 @@ public class PlayerInteraction : MonoBehaviour
                     queue.Enqueue(new Vector2Int(nx, ny));
                     visited[nx, ny] = true;
                 }
-                //돈이 아닌 곳을 만나면 실패
-                else if (mapData[nx, ny] != MapData.DEAD_MONEY)
-                    return;
             }
         }
 
         if(posList.Count != 0)
-        {
-            Debug.Log("!!!");
             PlayGetMoneybyRuleParticles(posList);
-        }
         foreach (Vector2Int pos in posList)
             StageManager.instance.GetMoney(pos);
+        return true;
     }
+
     void PlayGetMoneybyRuleParticles(List<Vector2Int> posList)
     {
         var bursts = ps.emission.GetBurst(0);
