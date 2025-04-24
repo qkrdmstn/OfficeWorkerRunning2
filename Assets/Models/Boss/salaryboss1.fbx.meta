@@ -3,7 +3,17 @@ guid: 7a0fda61f4302c041ba40501d493d4ff
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: bossbody
+    second: {fileID: 2100000, guid: f0db6c705262d6448ab0fe2c14dee216, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: bosstooth
+    second: {fileID: 2100000, guid: c3a9d55e2ef9fc54a8e0ce4fb7e7799c, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0

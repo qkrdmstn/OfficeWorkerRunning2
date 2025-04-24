@@ -25,9 +25,9 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
-        if(instance == null)
+        if (instance == null)
             instance = this;
-        else if(instance != this)
+        else if (instance != this)
             Destroy(this.gameObject);
 
         DontDestroyOnLoad(this.gameObject);
@@ -50,17 +50,40 @@ public class GameManager : MonoBehaviour
 
     public void GameClear()
     {
+        if (isGameClear)
+            return;
         isGameClear = true;
-        Time.timeScale = 0.0f;
-        OnGameClear.Invoke();
+        PlayerController player = FindObjectOfType<PlayerController>();
+        player.GameEnd(true);
+
+        StartCoroutine(GameClearDelay(player.animDelay));
+    }
+
+    private IEnumerator GameClearDelay(float delay)
+    {
+        yield return new WaitForSecondsRealtime(delay); // 애니메이션 시간만큼 대기
+        Time.timeScale = 0f;
+        OnGameClear.Invoke(); // 이벤트 호출
     }
 
     public void GameOver()
     {
+        if (isGameOver)
+            return;
         isGameOver = true;
-        Time.timeScale = 0.0f;
-        OnGameOver.Invoke();
+        PlayerController player = FindObjectOfType<PlayerController>();
+        player.GameEnd(false);
+
+        StartCoroutine(GameOverDelay(player.animDelay));
     }
+
+    private IEnumerator GameOverDelay(float delay)
+    {
+        yield return new WaitForSecondsRealtime(delay); // 애니메이션 시간만큼 대기
+        Time.timeScale = 0f;
+        OnGameOver.Invoke(); // 이벤트 호출
+    }
+
 
     public void Pause()
     {
@@ -70,7 +93,6 @@ public class GameManager : MonoBehaviour
 
     public void Resume()
     {
-        Time.timeScale = 1.0f;
         OnResume.Invoke();
     }
 
@@ -81,7 +103,7 @@ public class GameManager : MonoBehaviour
 
     public void NextStage()
     {
-        if(stageIndex < numOfStage)
+        if (stageIndex < numOfStage)
             stageIndex++;
         LoadScene(SceneName.Stage);
     }

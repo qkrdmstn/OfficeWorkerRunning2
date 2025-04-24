@@ -92,7 +92,11 @@ public class StageManager : MonoBehaviour
                 //Todo Item마다 높이 다르게
                 if (mapData[i, j] >= MapData.MONEY && mapData[i, j] <= MapData.COFFEE)
                 {
-                    GameObject item = Instantiate(itemPrefabs[(int)mapData[i, j] - 1], GetGridPos(i, itemYPos, j), Quaternion.identity);
+                    float yPos = itemYPos;
+                    if (mapData[i, j] == MapData.MONEY)
+                        yPos = 0.7f;
+
+                    GameObject item = Instantiate(itemPrefabs[(int)mapData[i, j] - 1], GetGridPos(i, yPos, j), Quaternion.identity);
                     item.name = "(" + i + "," + j + ")";
                     item.transform.parent = itemParents[(int)mapData[i, j] - 1].transform;
 

@@ -9,6 +9,7 @@ TagManager:
   - Money
   - PostIt
   - Mail
+  - UI
   layers:
   - Default
   - TransparentFX

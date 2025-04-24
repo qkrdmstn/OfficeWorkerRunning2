@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class MoneyCountController : MonoBehaviour
 {
-    [Header("KeyCount Settings")]
+    [Header("MoneyCount Settings")]
     public MoneyCountView view;
     private MoneyCountModel model;
 

@@ -33,9 +33,7 @@ public class BossController : Controller
         base.OnUpdate();
 
         if(Vector3.Distance(this.transform.position, playerTransform.position) < deadDist && !GameManager.instance.isGameOver)
-        {
-            playerController.stateMachine.ChangeState(playerController.deadState);
-        }
+            GameManager.instance.GameOver();
     }
 
     public override State GetStateByCurrentCommand()

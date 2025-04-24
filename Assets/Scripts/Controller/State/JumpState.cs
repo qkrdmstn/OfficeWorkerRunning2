@@ -22,8 +22,8 @@ public class JumpState : ControllerState
     private float gravity;
 
 
-    public JumpState(Controller controller, Rigidbody rb, StateMachine stateMachine)
-        : base(controller, rb, stateMachine)
+    public JumpState(Controller controller, Rigidbody rb, Animator anim, StateMachine stateMachine)
+        : base(controller, rb, anim, stateMachine)
     {
         jumpLayer = controller.jumpLayer;
         playerLayer = controller.playerLayer;
@@ -38,6 +38,7 @@ public class JumpState : ControllerState
         base.Enter();
 
         controller.isJump = true;
+        animator.SetBool("IsJump", true);
         controller.ChangeCollisionLayer(jumpLayer);
 
         // 초기 위치 설정
@@ -84,6 +85,7 @@ public class JumpState : ControllerState
     {
         base.Exit();
         controller.isJump = false;
+        animator.SetBool("IsJump", false);
         controller.ChangeCollisionLayer(playerLayer);
     }
 

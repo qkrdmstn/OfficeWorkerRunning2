@@ -6,12 +6,14 @@ public class ControllerState : State
 {
     protected Controller controller;
     protected Rigidbody rb;
+    protected Animator animator;
     protected StateMachine stateMachine;
 
-    public ControllerState(Controller _controller, Rigidbody _rb, StateMachine _stateMachine)
+    public ControllerState(Controller _controller, Rigidbody _rb, Animator _anim, StateMachine _stateMachine)
     {
         controller = _controller;
         rb = _rb;
+        animator = _anim;
         stateMachine = _stateMachine;
     }
 

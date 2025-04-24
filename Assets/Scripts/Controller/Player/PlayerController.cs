@@ -15,13 +15,17 @@ public enum Command
 public class PlayerController : Controller
 {
     #region State
-
-
+    public DeadState deadState { get; private set; }
+    public VictoryState victoryState { get; private set; }
     #endregion 
+
+    public float animDelay = 0.0f;
 
     protected override void OnAwake()
     {
         base.OnAwake();
+        deadState = new DeadState(this, rb, animator, stateMachine);
+        victoryState = new VictoryState(this, rb, animator, stateMachine);
     }
 
     protected override void OnStart()
@@ -48,5 +52,13 @@ public class PlayerController : Controller
             default:
                 return moveState;
         }
+    }
+
+    public void GameEnd(bool isClear)
+    {
+        if (isClear)
+            stateMachine.ChangeState(victoryState);
+        else
+            stateMachine.ChangeState(deadState);
     }
 }

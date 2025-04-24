@@ -6,7 +6,7 @@ public class RotateState : ControllerState
 {
     Quaternion targetRotation;
     private int nextDir;
-    public RotateState(Controller _controller, Rigidbody _rb, StateMachine _stateMachine) : base(_controller, _rb, _stateMachine)
+    public RotateState(Controller _controller, Rigidbody _rb, Animator _anim,  StateMachine _stateMachine) : base(_controller, _rb, _anim, _stateMachine)
     {
 
     }
@@ -16,6 +16,7 @@ public class RotateState : ControllerState
         base.Enter();
 
         controller.isRotate = true;
+        animator.SetBool("IsMove", true);
         controller.SetVelocity(Vector3.zero);
         if (controller.curCommand == Command.ROTATE_LEFT)
             nextDir = controller.facingDir + 3;
@@ -47,5 +48,6 @@ public class RotateState : ControllerState
         controller.facingDir = nextDir;
         controller.curCommand = Command.MOVE;
         controller.isRotate = false;
+        animator.SetBool("IsMove", false);
     }
 }

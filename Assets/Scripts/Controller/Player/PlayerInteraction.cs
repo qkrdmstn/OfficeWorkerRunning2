@@ -17,11 +17,17 @@ public class PlayerInteraction : MonoBehaviour
     [SerializeField] private BossController boss;
     [SerializeField] private CoffeeEffectManager coffeeEffectManager;
 
+    [Header("Particles")]
+    [SerializeField] private GameObject getMoneyEffect;
+    [SerializeField] private GameObject getMoneybyRuleEffect;
+    private ParticleSystem ps;
+
     // Start is called before the first frame update
     void Start()
     {
         player = GetComponent<PlayerController>();
         mapData = StageManager.instance.mapData;
+        ps = getMoneybyRuleEffect.GetComponent<ParticleSystem>();
     }
 
     void OnTriggerEnter(Collider collision)
@@ -38,6 +44,7 @@ public class PlayerInteraction : MonoBehaviour
             if (mapData[x, y] == MapData.MONEY)
             {
                 StageManager.instance.GetMoney(new Vector2Int(x, y));
+                getMoneyEffect.SetActive(true);
                 AroundSearch(x, y);
             }
         }
@@ -48,7 +55,7 @@ public class PlayerInteraction : MonoBehaviour
             player.stateMachine.ChangeState(player.moveState);
         }
         else if (collision.CompareTag("FileStack"))
-            player.stateMachine.ChangeState(player.deadState);
+            GameManager.instance.GameOver();
         else if (collision.CompareTag("Mail"))
             boss.StartChase();
         else if (collision.CompareTag("Coffee"))
@@ -117,7 +124,19 @@ public class PlayerInteraction : MonoBehaviour
             }
         }
 
+        if(posList.Count != 0)
+        {
+            Debug.Log("!!!");
+            PlayGetMoneybyRuleParticles(posList);
+        }
         foreach (Vector2Int pos in posList)
             StageManager.instance.GetMoney(pos);
+    }
+    void PlayGetMoneybyRuleParticles(List<Vector2Int> posList)
+    {
+        var bursts = ps.emission.GetBurst(0);
+        bursts.count = posList.Count * 5;
+        ps.emission.SetBurst(0, bursts);
+        getMoneybyRuleEffect.SetActive(true);
     }
 }

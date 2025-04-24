@@ -29,6 +29,7 @@ public abstract class Controller : MonoBehaviour
     public bool isJump;
     public bool isRotate;
 
+    public Animator animator;
     public Rigidbody rb { get; private set; }
     public Command curCommand;
 
@@ -36,11 +37,12 @@ public abstract class Controller : MonoBehaviour
     public MoveState moveState { get; private set; }
     public RotateState rotateState { get; private set; }
     public JumpState jumpState { get; private set; }
-    public DeadState deadState { get; private set; }
+
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
+
         playerLayer = LayerMask.NameToLayer("Player");
         jumpLayer = LayerMask.NameToLayer("PlayerJump");
 
@@ -50,10 +52,10 @@ public abstract class Controller : MonoBehaviour
 
     protected virtual void OnAwake()
     {
-        moveState = new MoveState(this, rb, stateMachine);
-        rotateState = new RotateState(this, rb, stateMachine);
-        jumpState = new JumpState(this, rb, stateMachine);
-        deadState = new DeadState(this, rb, stateMachine);
+        moveState = new MoveState(this, rb, animator, stateMachine);
+        rotateState = new RotateState(this, rb, animator, stateMachine);
+        jumpState = new JumpState(this, rb, animator, stateMachine);
+
     }
 
     private void Start()
@@ -122,4 +124,5 @@ public abstract class Controller : MonoBehaviour
     {
         gameObject.layer = _layer;
     }
+    
 }

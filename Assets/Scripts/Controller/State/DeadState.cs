@@ -4,15 +4,18 @@ using UnityEngine;
 
 public class DeadState : ControllerState
 {
-    public DeadState(Controller _controller, Rigidbody _rb, StateMachine _stateMachine) : base(_controller, _rb, _stateMachine)
+    public DeadState(Controller _controller, Rigidbody _rb, Animator _anim, StateMachine _stateMachine) : base(_controller, _rb, _anim, _stateMachine)
     {
     }
 
     public override void Enter()
     {
         base.Enter();
-        GameManager.instance.GameOver();
         controller.SetVelocity(0.0f);
+
+        PlayerController player = controller as PlayerController;
+        if (player != null) player.animDelay = 3.1f;
+        animator.SetBool("IsGameOver", true);
     }
 
     public override void Update()

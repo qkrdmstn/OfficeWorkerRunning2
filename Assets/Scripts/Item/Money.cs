@@ -5,6 +5,7 @@ using UnityEngine;
 public class Money : Item
 {
     private MeshRenderer meshRenderer;
+    public GameObject effect;
 
     public void Awake()
     {
@@ -14,5 +15,6 @@ public class Money : Item
     public void ChangeColor()
     {
         meshRenderer.materials[1].color = Color.white;
+        effect.SetActive(false);
     }
 }
