@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.ShaderGraph;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -31,6 +32,23 @@ public class GameManager : MonoBehaviour
             Destroy(this.gameObject);
 
         DontDestroyOnLoad(this.gameObject);
+
+    }
+
+    private void Start()
+    {
+        string clipName = "MainSceneBGM";
+        if (SceneManager.GetActiveScene().name == "Stage")
+        {
+            clipName = "StageScene_";
+            if (stageIndex < 10)
+                clipName += "Normal";
+            else if (stageIndex < 20)
+                clipName += "Hard";
+            else
+                clipName += "Chaos";
+        }
+        SoundManager.instance.Play(clipName, SoundType.BGM, true);
     }
 
     public void StartStage()
@@ -46,6 +64,19 @@ public class GameManager : MonoBehaviour
         isGameClear = false;
         isGameOver = false;
         SceneManager.LoadScene(sceneName);
+
+        string clipName = "MainSceneBGM";
+        if (name == SceneName.Stage)
+        {
+            clipName = "StageScene_";
+            if (stageIndex < 10)
+                clipName += "Normal";
+            else if (stageIndex < 20)
+                clipName += "Hard";
+            else 
+                clipName += "Chaos";
+        }
+        SoundManager.instance.Play(clipName, SoundType.BGM, true);
     }
 
     public void GameClear()

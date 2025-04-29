@@ -15,8 +15,7 @@ public class SettingUIModel
     public void SetSoundVal(SoundType ui, float _val)
     {
         soundVal[(int)ui] = _val;
-        //Todo. SoundManager의 음량 조절
-
+        SoundManager.instance.SetVolume(ui, _val);
     }
 
     public float GetSoundVal(SoundType ui)

@@ -18,12 +18,14 @@ public class TutorialUIController : MonoBehaviour
     {
         model.NextPage();
         view.UpdateTutorialView(model.GetCurPage());
+        SoundManager.instance.Play("ClickSound");
     }
 
     public void OnPrevBtnClicked()
     {
         model.PrevPage();
         view.UpdateTutorialView(model.GetCurPage());
+        SoundManager.instance.Play("ClickSound");
     }
 
     public void OnTutorialBtnClicked()
@@ -31,10 +33,12 @@ public class TutorialUIController : MonoBehaviour
         model.InitPage();
         view.UpdateTutorialView(model.GetCurPage());
         view.gameObject.SetActive(true);
+        SoundManager.instance.Play("ClickSound");
     }
 
     public void OnCloseBtnClicked()
     {
         view.gameObject.SetActive(false);
+        SoundManager.instance.Play("ClickSound");
     }
 }

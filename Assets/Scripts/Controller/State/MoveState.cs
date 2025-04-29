@@ -14,7 +14,7 @@ public class MoveState : ControllerState
     public override void Enter()
     {
         base.Enter();
-        animator.SetBool("IsMove", true);
+        if (controller.controllerType == ControllerType.PLAYER) animator.SetBool("IsMove", true);
         nextGridCenter = controller.GetNextGridCenter();
     }
 
@@ -36,7 +36,7 @@ public class MoveState : ControllerState
     public override void Exit()
     {
         base.Exit();
-        animator.SetBool("IsMove", false);
+        if (controller.controllerType == ControllerType.PLAYER) animator.SetBool("IsMove", false);
     }
 
     public void RecoverMoveDir()

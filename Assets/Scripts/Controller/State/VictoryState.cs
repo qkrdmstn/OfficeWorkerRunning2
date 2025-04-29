@@ -22,7 +22,8 @@ public class VictoryState : ControllerState
             else
                 player.animDelay = 1.8f;
         }
-        animator.SetInteger("IsVictory", rand);
+        if (controller.controllerType == ControllerType.PLAYER) animator.SetInteger("IsVictory", rand);
+        SoundManager.instance.Play("ClearSound");
     }
 
     public override void Update()

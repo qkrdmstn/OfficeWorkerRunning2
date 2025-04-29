@@ -19,6 +19,7 @@ public class StageIndexController : MonoBehaviour
     {
         model.StageIdxChange(up);
         GameManager.instance.stageIndex = model.StageIndex;
+        SoundManager.instance.Play("ClickSound");
         UpdateStageUI();
     }
 
@@ -30,6 +31,7 @@ public class StageIndexController : MonoBehaviour
     public void OnStartButtonClicked()
     {
         GameManager.instance.StartStage();
+        SoundManager.instance.Play("ClickSound");
     }
 
 }

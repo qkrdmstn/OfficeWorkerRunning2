@@ -42,6 +42,9 @@ public class StageManager : MonoBehaviour
     public GameObject[] itemParents;
     public float itemYPos;
 
+    [Header("Camera")]
+    public GameObject playerFollowCamera;
+
     public event Action StageLoadCompleted;
     public event Action<Vector3> OnMoneyCollected;
 

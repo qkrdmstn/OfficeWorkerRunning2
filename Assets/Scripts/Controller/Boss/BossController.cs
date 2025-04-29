@@ -15,6 +15,9 @@ public class BossController : Controller
     private CommandInvoker commandInvoker;
     private Coroutine despawnCoroutine;
 
+    public float soundPeriod;
+    public float soundTimer;
+
     protected override void OnAwake()
     {
         base.OnAwake();
@@ -34,6 +37,13 @@ public class BossController : Controller
 
         if(Vector3.Distance(this.transform.position, playerTransform.position) < deadDist && !GameManager.instance.isGameOver)
             GameManager.instance.GameOver();
+
+        soundTimer -= Time.deltaTime;
+        if(soundTimer < 0)
+        {
+            SoundManager.instance.Play("BossSound");
+            soundTimer = soundPeriod;
+        }
     }
 
     public override State GetStateByCurrentCommand()

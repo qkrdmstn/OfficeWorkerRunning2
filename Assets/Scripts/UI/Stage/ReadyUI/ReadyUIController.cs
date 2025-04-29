@@ -21,8 +21,6 @@ public class ReadyUIController : MonoBehaviour
 
     private IEnumerator readyCoroutine()
     {
-        yield return null;
-        yield return null;
         Time.timeScale = 0.0f;
         view.gameObject.SetActive(true);
         view.readyUIImage.SetActive(true);

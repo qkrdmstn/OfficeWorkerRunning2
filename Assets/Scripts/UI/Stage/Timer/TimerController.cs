@@ -34,6 +34,7 @@ public class TimerController : MonoBehaviour
         {
             isTimeRunning = false;
             view.OnTimeOver();
+            SoundManager.instance.Play("TimeOverSound");
             GameManager.instance.GameOver();
         }
     }

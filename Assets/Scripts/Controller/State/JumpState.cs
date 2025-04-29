@@ -38,7 +38,8 @@ public class JumpState : ControllerState
         base.Enter();
 
         controller.isJump = true;
-        animator.SetBool("IsJump", true);
+        if (controller.controllerType == ControllerType.PLAYER)
+            animator.SetBool("IsJump", true);
         controller.ChangeCollisionLayer(jumpLayer);
 
         // 초기 위치 설정
@@ -52,6 +53,8 @@ public class JumpState : ControllerState
         // 포물선 공식 기반 초기 vy, 중력 계산
         vy = (4f * jumpHeight) / jumpDuration;
         gravity = (8f * jumpHeight) / (jumpDuration * jumpDuration);
+
+        SoundManager.instance.Play("JumpSound");
     }
 
     public override void Update()
@@ -85,7 +88,8 @@ public class JumpState : ControllerState
     {
         base.Exit();
         controller.isJump = false;
-        animator.SetBool("IsJump", false);
+        if (controller.controllerType == ControllerType.PLAYER) 
+            animator.SetBool("IsJump", false);
         controller.ChangeCollisionLayer(playerLayer);
     }
 

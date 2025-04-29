@@ -12,6 +12,8 @@ public abstract class Controller : MonoBehaviour
 {
     public static Vector3[] dir = { Vector3.forward, Vector3.right, Vector3.back, Vector3.left };
 
+    public ControllerType controllerType;
+
     [Header("Move info")]
     public int moveDir = 1;
     public int facingDir = 0;

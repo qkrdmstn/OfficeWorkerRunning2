@@ -1,3 +1,4 @@
+using Cinemachine;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,17 +6,20 @@ using UnityEngine;
 public class PlayerFollowCamera : MonoBehaviour
 {
     public Transform target;
-    public Vector3 offset;
-    public float smoothSpeed = 0.125f;
+    public bool flag;
 
-    void FixedUpdate()
+    public void Awake()
     {
-        if (target == null) return;
+        flag = false;
+    }
 
-        Vector3 desiredPos = target.position + offset;
-        Vector3 smoothedPos = Vector3.Lerp(transform.position, desiredPos, smoothSpeed);
-        transform.position = smoothedPos;
-
-        //transform.LookAt(target);
+    public void Update()
+    {
+        if (!flag)
+        {
+            Camera.main.transform.position = transform.position;
+            Camera.main.transform.rotation = transform.rotation;
+            flag = true;
+        }
     }
 }

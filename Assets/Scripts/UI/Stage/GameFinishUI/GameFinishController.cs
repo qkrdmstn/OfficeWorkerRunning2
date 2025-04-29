@@ -36,21 +36,25 @@ public class GameFinishController : MonoBehaviour
     public void OnExitBtnClicked()
     {
         GameManager.instance.Exit();
+        SoundManager.instance.Play("ClickSound");
     }
 
     public void OnNextBtnClicked()
     {
         GameManager.instance.NextStage();
+        SoundManager.instance.Play("ClickSound");
     }
 
     public void OnReviveClicked()
     {
         //Todo. 살아나기 구현
+        SoundManager.instance.Play("ClickSound");
     }
 
     public void OnRestartClicked()
     {
         GameManager.instance.StageRestart();
+        SoundManager.instance.Play("ClickSound");
     }
 
     void OnDestroy()

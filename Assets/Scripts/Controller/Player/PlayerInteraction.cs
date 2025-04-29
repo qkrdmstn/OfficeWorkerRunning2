@@ -18,7 +18,6 @@ public class PlayerInteraction : MonoBehaviour
     [SerializeField] private CoffeeEffectManager coffeeEffectManager;
 
     [Header("Particles")]
-    [SerializeField] private GameObject getMoneyEffect;
     [SerializeField] private GameObject getMoneybyRuleEffect;
     private ParticleSystem ps;
 
@@ -44,7 +43,8 @@ public class PlayerInteraction : MonoBehaviour
             if (mapData[x, y] == MapData.MONEY)
             {
                 StageManager.instance.GetMoney(new Vector2Int(x, y));
-                getMoneyEffect.SetActive(true);
+                SoundManager.instance.Play("MoneySound");
+
                 AroundSearch(x, y);
             }
         }
@@ -53,13 +53,23 @@ public class PlayerInteraction : MonoBehaviour
             player.isBump = true;
             player.ToggleMoveDir();
             player.stateMachine.ChangeState(player.moveState);
+            SoundManager.instance.Play("PostITSound");
         }
         else if (collision.CompareTag("FileStack"))
+        {
             GameManager.instance.GameOver();
+            SoundManager.instance.Play("FileStackSound");
+        }
         else if (collision.CompareTag("Mail"))
+        {
             boss.StartChase();
+            SoundManager.instance.Play("MailSound");
+        }
         else if (collision.CompareTag("Coffee"))
+        {
             coffeeEffectManager.TriggerEffect();
+            SoundManager.instance.Play("CoffeeSound");
+        }
     }
 
     private bool OutOfMap(int x, int y, int size)
@@ -122,7 +132,10 @@ public class PlayerInteraction : MonoBehaviour
         }
 
         if(posList.Count != 0)
+        {
             PlayGetMoneybyRuleParticles(posList);
+            SoundManager.instance.Play("MoneyByRuleSound");
+        }
         foreach (Vector2Int pos in posList)
             StageManager.instance.GetMoney(pos);
         return true;
