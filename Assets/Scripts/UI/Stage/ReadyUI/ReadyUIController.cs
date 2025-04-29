@@ -11,12 +11,14 @@ public class ReadyUIController : MonoBehaviour
     void Awake()
     {
         GameManager.instance.OnResume += StartReadyUI;
+        GameManager.instance.OnPause += StopReadyUI;
         StageManager.instance.StageLoadCompleted += StartReadyUI;
     }
 
     public void StartReadyUI()
     {
         StartCoroutine(readyCoroutine());
+        GameManager.instance.gameStateFlag[(int)GameState.READY] = true;
     }
 
     private IEnumerator readyCoroutine()
@@ -32,13 +34,24 @@ public class ReadyUIController : MonoBehaviour
 
         Time.timeScale = 1.0f;
         view.readyUIImage.SetActive(false);
+        GameManager.instance.gameStateFlag[(int)GameState.READY] = false;
+
         view.UpdateReadyText("Start!");
         yield return new WaitForSecondsRealtime(0.5f);
         view.gameObject.SetActive(false);
     }
 
+    public void StopReadyUI()
+    {
+        StopAllCoroutines();
+        view.readyUIImage.SetActive(false);
+        view.gameObject.SetActive(false);
+        GameManager.instance.gameStateFlag[(int)GameState.READY] = false;
+    }
+
     private void OnDestroy()
     {
         GameManager.instance.OnResume -= StartReadyUI;
+        GameManager.instance.OnPause -= StopReadyUI;
     }
 }

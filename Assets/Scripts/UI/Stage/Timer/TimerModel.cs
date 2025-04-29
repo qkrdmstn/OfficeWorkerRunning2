@@ -6,7 +6,7 @@ public class TimerModel
 {
     public float timeLimit { get; private set; }
     public float elapsedTime { get; private set; }
-    private bool flag = false;
+    public bool flag = false;
 
     public TimerModel(float _timeLimit)
     {
@@ -18,9 +18,12 @@ public class TimerModel
     public void UpdateTime(float deltaTime)
     {
         elapsedTime += deltaTime;
-        if (elapsedTime >= timeLimit - 8.856f && !flag)
+        if (elapsedTime > timeLimit - 8.856f && !flag)
         {
-            SoundManager.instance.Play("Timer8secSound");
+            float startTime = 8.856f - (timeLimit - elapsedTime);
+            if (startTime < 0f)
+                startTime = 0f;
+            SoundManager.instance.PlayFromTime("Timer8secSound", startTime);
             flag = true;
         }
     }

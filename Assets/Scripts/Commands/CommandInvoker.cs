@@ -37,6 +37,9 @@ public class CommandInvoker : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (!GameManager.instance.IsPlaying())
+            return;
+
         if (isRecording)
         {
             recordingFrame++;
@@ -80,7 +83,7 @@ public class CommandInvoker : MonoBehaviour
 
     public void InputHadle()
     {
-        if (!GameManager.instance.isGameOver && !GameManager.instance.isGameClear && !isReplaying)
+        if (GameManager.instance.IsPlaying() && !isReplaying)
         {
             if (Input.GetKeyDown(KeyCode.Space))
                 ExecuteCommand(new JumpCommand());
@@ -114,25 +117,25 @@ public class CommandInvoker : MonoBehaviour
 
     public void OnJumpButtonPressed()
     {
-        if (!GameManager.instance.isGameOver && !GameManager.instance.isGameClear && !isReplaying)
+        if (GameManager.instance.IsPlaying() && !isReplaying)
             ExecuteCommand(new JumpCommand());
     }
 
     public void OnLeftRotateButtonPressed()
     {
-        if (!GameManager.instance.isGameOver && !GameManager.instance.isGameClear && !isReplaying)
+        if (GameManager.instance.IsPlaying() && !isReplaying)
             ExecuteCommand(new RotateCommand(Command.ROTATE_LEFT));
     }
 
     public void OnRightRotateButtonPressed()
     {
-        if (!GameManager.instance.isGameOver && !GameManager.instance.isGameClear && !isReplaying)
+        if (GameManager.instance.IsPlaying() && !isReplaying)
             ExecuteCommand(new RotateCommand(Command.ROTATE_RIGHT));
     }
 
     public void OnMoveButtonPressed()
     {
-        if (!GameManager.instance.isGameOver && !GameManager.instance.isGameClear && !isReplaying)
+        if (GameManager.instance.IsPlaying() && !isReplaying)
             ExecuteCommand(new RecoverDirCommand());
     }
 

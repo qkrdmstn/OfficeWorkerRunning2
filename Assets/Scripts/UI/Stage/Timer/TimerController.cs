@@ -13,6 +13,7 @@ public class TimerController : MonoBehaviour
     void Awake()
     {
         StageManager.instance.StageLoadCompleted += InitializeTimerUI;
+        GameManager.instance.OnResume += TimerResume;
     }
 
     public void InitializeTimerUI()
@@ -27,6 +28,9 @@ public class TimerController : MonoBehaviour
         if (!isTimeRunning || model == null)
             return;
 
+        if (!GameManager.instance.IsPlaying())
+            return;
+
         model.UpdateTime(Time.deltaTime);
         view.UpdateSlider(model.GetRemainingRatio());
 
@@ -34,8 +38,13 @@ public class TimerController : MonoBehaviour
         {
             isTimeRunning = false;
             view.OnTimeOver();
-            SoundManager.instance.Play("TimeOverSound");
             GameManager.instance.GameOver();
+            SoundManager.instance.Play("TimeOverSound");
         }
+    }
+
+    public void TimerResume()
+    {
+        model.flag = false;
     }
 }

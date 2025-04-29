@@ -5,6 +5,14 @@ using UnityEditor.ShaderGraph;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+public enum GameState
+{
+    READY,
+    PAUSE,
+    CLEAR,
+    OVER
+}
+
 public enum SceneName
 {
     Main,
@@ -15,8 +23,7 @@ public class GameManager : MonoBehaviour
 {
     public int stageIndex;
     public int numOfStage = 30;
-    public bool isGameClear;
-    public bool isGameOver;
+    public bool[] gameStateFlag = new bool[4];
 
     public static GameManager instance;
     public event Action OnGameClear;
@@ -32,7 +39,6 @@ public class GameManager : MonoBehaviour
             Destroy(this.gameObject);
 
         DontDestroyOnLoad(this.gameObject);
-
     }
 
     private void Start()
@@ -61,8 +67,7 @@ public class GameManager : MonoBehaviour
         string sceneName = name.ToString();
 
         Time.timeScale = 1.0f;
-        isGameClear = false;
-        isGameOver = false;
+        InitGameState();
         SceneManager.LoadScene(sceneName);
 
         string clipName = "MainSceneBGM";
@@ -81,11 +86,14 @@ public class GameManager : MonoBehaviour
 
     public void GameClear()
     {
-        if (isGameClear)
+        if (gameStateFlag[(int)GameState.CLEAR])
             return;
-        isGameClear = true;
+        gameStateFlag[(int)GameState.CLEAR] = true;
         PlayerController player = FindObjectOfType<PlayerController>();
         player.GameEnd(true);
+
+        SoundManager.instance.Stop(SoundType.TIMER);
+        SoundManager.instance.Play("ClearSound");
 
         StartCoroutine(GameClearDelay(player.animDelay));
     }
@@ -99,11 +107,14 @@ public class GameManager : MonoBehaviour
 
     public void GameOver()
     {
-        if (isGameOver)
+        if (gameStateFlag[(int)GameState.OVER])
             return;
-        isGameOver = true;
+        gameStateFlag[(int)GameState.OVER] = true;
         PlayerController player = FindObjectOfType<PlayerController>();
         player.GameEnd(false);
+
+        SoundManager.instance.Stop(SoundType.TIMER);
+        SoundManager.instance.Play("DeadSound");
 
         StartCoroutine(GameOverDelay(player.animDelay));
     }
@@ -115,20 +126,28 @@ public class GameManager : MonoBehaviour
         OnGameOver.Invoke(); // 이벤트 호출
     }
 
-
     public void Pause()
     {
+        if (gameStateFlag[(int)GameState.OVER] || gameStateFlag[(int)GameState.CLEAR])
+            return;
+
         Time.timeScale = 0.0f;
+        SoundManager.instance.Stop(SoundType.SFX);
+        SoundManager.instance.Stop(SoundType.TIMER);
+        gameStateFlag[(int)GameState.PAUSE] = true;
         OnPause.Invoke();
     }
 
     public void Resume()
     {
+        gameStateFlag[(int)GameState.PAUSE] = false;
         OnResume.Invoke();
     }
 
     public void Exit()
     {
+        SoundManager.instance.Stop(SoundType.SFX);
+        SoundManager.instance.Stop(SoundType.TIMER);
         LoadScene(SceneName.Main);
     }
 
@@ -141,6 +160,24 @@ public class GameManager : MonoBehaviour
 
     public void StageRestart()
     {
+        SoundManager.instance.Stop(SoundType.SFX);
+        SoundManager.instance.Stop(SoundType.TIMER);
         LoadScene(SceneName.Stage);
+    }
+
+    public bool IsPlaying()
+    {
+        foreach (GameState type in Enum.GetValues(typeof(GameState)))
+        {
+            if (gameStateFlag[(int)type])
+                return false;
+        }
+        return true;
+    }
+
+    public void InitGameState()
+    {
+        foreach (GameState type in Enum.GetValues(typeof(GameState)))
+            gameStateFlag[(int)type] = false;
     }
 }

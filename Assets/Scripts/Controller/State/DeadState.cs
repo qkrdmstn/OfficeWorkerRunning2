@@ -18,8 +18,6 @@ public class DeadState : ControllerState
         if (player != null) player.animDelay = 3.1f;
         if(controller.controllerType == ControllerType.PLAYER)
             animator.SetBool("IsGameOver", true);
-
-        SoundManager.instance.Play("DeadSound");
     }
 
     public override void Update()

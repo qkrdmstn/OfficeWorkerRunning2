@@ -5,7 +5,8 @@ using UnityEngine;
 public enum SoundType
 {
     SFX,
-    BGM
+    BGM,
+    TIMER
 }
 
 public class SoundManager : MonoBehaviour
@@ -15,6 +16,7 @@ public class SoundManager : MonoBehaviour
     [Header("Audio Sources")]
     public AudioSource sfxSource;
     public AudioSource bgmSource;
+    public AudioSource timerSource;
 
     [Header("Volume Settings")]
     [Range(0f, 1f)] public float sfxVolume = 1.0f;
@@ -23,6 +25,7 @@ public class SoundManager : MonoBehaviour
     [Header("Audio Clips")]
     public AudioClip[] bgmClips;
     public AudioClip[] sfxClips;
+    public AudioClip timerClip;
 
     private Dictionary<string, AudioClip> bgmDict = new Dictionary<string, AudioClip>();
     private Dictionary<string, AudioClip> sfxDict = new Dictionary<string, AudioClip>();
@@ -58,10 +61,18 @@ public class SoundManager : MonoBehaviour
             case SoundType.SFX:
                 if (sfxDict.ContainsKey(clipName))
                 {
-                    sfxSource.PlayOneShot(sfxDict[clipName], sfxVolume);
+                    sfxSource.PlayOneShot(sfxDict[clipName], sfxVolume * 2f);
                 }
                 break;
         }
+    }
+
+    public void PlayFromTime(string clipName, float startTime, SoundType type = SoundType.TIMER)
+    {
+        timerSource.clip = timerClip;
+        timerSource.time = startTime;
+        timerSource.volume = sfxVolume * 2f;
+        timerSource.Play();
     }
 
     public void Stop(SoundType type)
@@ -73,6 +84,9 @@ public class SoundManager : MonoBehaviour
                 break;
             case SoundType.SFX:
                 sfxSource.Stop();
+                break;
+            case SoundType.TIMER:
+                timerSource.Stop();
                 break;
         }
     }
@@ -89,6 +103,17 @@ public class SoundManager : MonoBehaviour
                 sfxVolume = volume;
                 sfxSource.volume = volume;
                 break;
+        }
+    }
+
+    public void StopIfSFXIs(string clipName)
+    {
+        if (sfxSource != null && sfxSource.isPlaying && sfxSource.clip != null)
+        {
+            if (sfxSource.clip.name == clipName)
+            {
+                sfxSource.Stop();
+            }
         }
     }
 }

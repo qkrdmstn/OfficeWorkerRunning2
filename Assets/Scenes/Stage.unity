@@ -6430,8 +6430,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   stageIndex: 0
   numOfStage: 30
-  isGameClear: 0
-  isGameOver: 0
+  gameStateFlag: 00000000
 --- !u!1 &1678480960
 GameObject:
   m_ObjectHideFlags: 0

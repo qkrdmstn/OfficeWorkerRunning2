@@ -33,6 +33,9 @@ public class PlayerController : Controller
         base.OnStart();
         stateMachine.Initialize(moveState);
         curCommand = Command.MOVE;
+
+        moveSpeed += GameManager.instance.stageIndex * 0.2f;
+        rotateSpeed += GameManager.instance.stageIndex * 1.0f;
     }
 
     protected override void OnUpdate()

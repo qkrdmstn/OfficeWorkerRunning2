@@ -35,7 +35,7 @@ public class BossController : Controller
     {
         base.OnUpdate();
 
-        if(Vector3.Distance(this.transform.position, playerTransform.position) < deadDist && !GameManager.instance.isGameOver)
+        if(Vector3.Distance(this.transform.position, playerTransform.position) < deadDist && GameManager.instance.IsPlaying())
             GameManager.instance.GameOver();
 
         soundTimer -= Time.deltaTime;
