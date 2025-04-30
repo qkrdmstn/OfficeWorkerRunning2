@@ -10,7 +10,8 @@ public enum GameState
     READY,
     PAUSE,
     CLEAR,
-    OVER
+    OVER,
+    REPLAY,
 }
 
 public enum SceneName
@@ -23,7 +24,7 @@ public class GameManager : MonoBehaviour
 {
     public int stageIndex;
     public int numOfStage = 30;
-    public bool[] gameStateFlag = new bool[4];
+    public bool[] gameStateFlag = new bool[5];
 
     public static GameManager instance;
     public event Action OnGameClear;
@@ -95,6 +96,8 @@ public class GameManager : MonoBehaviour
         SoundManager.instance.Stop(SoundType.TIMER);
         SoundManager.instance.Play("ClearSound");
 
+        if (!gameStateFlag[(int)GameState.REPLAY])
+            DataManager.instance.SaveReplayData();
         StartCoroutine(GameClearDelay(player.animDelay));
     }
 
@@ -151,6 +154,13 @@ public class GameManager : MonoBehaviour
         LoadScene(SceneName.Main);
     }
 
+    public void Replay()
+    {
+        DataManager.instance.LoadReplayData();
+        LoadScene(SceneName.Stage);
+        gameStateFlag[(int)GameState.REPLAY] = true;
+    }
+
     public void NextStage()
     {
         if (stageIndex < numOfStage)
@@ -167,17 +177,12 @@ public class GameManager : MonoBehaviour
 
     public bool IsPlaying()
     {
-        foreach (GameState type in Enum.GetValues(typeof(GameState)))
-        {
-            if (gameStateFlag[(int)type])
-                return false;
-        }
-        return true;
+        return !(gameStateFlag[(int)GameState.READY] || (gameStateFlag[(int)GameState.PAUSE]) || (gameStateFlag[(int)GameState.OVER]) || (gameStateFlag[(int)GameState.CLEAR]));
     }
 
     public void InitGameState()
     {
-        foreach (GameState type in Enum.GetValues(typeof(GameState)))
-            gameStateFlag[(int)type] = false;
+        for(int i=0; i<(int)GameState.OVER; i++)
+            gameStateFlag[i] = false;
     }
 }

@@ -4,12 +4,13 @@ using Unity.VisualScripting;
 using UnityEngine;
 using static UnityEditor.PlayerSettings;
 
-public enum Command
+public enum CommandType
 {
     MOVE,
     ROTATE_LEFT,
     ROTATE_RIGHT,
-    JUMP
+    JUMP,
+    RECOVER_DIR,
 }
 
 public class PlayerController : Controller
@@ -32,7 +33,7 @@ public class PlayerController : Controller
     {
         base.OnStart();
         stateMachine.Initialize(moveState);
-        curCommand = Command.MOVE;
+        curCommand = CommandType.MOVE;
 
         moveSpeed += GameManager.instance.stageIndex * 0.2f;
         rotateSpeed += GameManager.instance.stageIndex * 1.0f;
@@ -47,10 +48,10 @@ public class PlayerController : Controller
     {
         switch (curCommand)
         {
-            case Command.ROTATE_LEFT:
-            case Command.ROTATE_RIGHT:
+            case CommandType.ROTATE_LEFT:
+            case CommandType.ROTATE_RIGHT:
                 return rotateState;
-            case Command.JUMP:
+            case CommandType.JUMP:
                 return jumpState;
             default:
                 return moveState;

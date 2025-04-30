@@ -18,7 +18,7 @@ public class RotateState : ControllerState
         controller.isRotate = true;
         if (controller.controllerType == ControllerType.PLAYER) animator.SetBool("IsMove", true);
         controller.SetVelocity(Vector3.zero);
-        if (controller.curCommand == Command.ROTATE_LEFT)
+        if (controller.curCommand == CommandType.ROTATE_LEFT)
             nextDir = controller.facingDir + 3;
         else
             nextDir = controller.facingDir + 1;
@@ -46,7 +46,7 @@ public class RotateState : ControllerState
     {
         base.Exit();
         controller.facingDir = nextDir;
-        controller.curCommand = Command.MOVE;
+        controller.curCommand = CommandType.MOVE;
         controller.isRotate = false;
         if (controller.controllerType == ControllerType.PLAYER) animator.SetBool("IsMove", false);
     }

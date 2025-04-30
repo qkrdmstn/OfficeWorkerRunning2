@@ -33,7 +33,7 @@ public abstract class Controller : MonoBehaviour
 
     public Animator animator;
     public Rigidbody rb { get; private set; }
-    public Command curCommand;
+    public CommandType curCommand;
 
     public StateMachine stateMachine { get; private set; }
     public MoveState moveState { get; private set; }

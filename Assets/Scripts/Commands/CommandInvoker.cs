@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Net;
 using UnityEngine;
@@ -12,11 +13,9 @@ public class CommandInvoker : MonoBehaviour
     public Controller[] controller;
 
     [Header("Recording info")]
-    public bool isRecording;
     [SerializeField] private int recordingFrame;
 
     [Header("Replaying info")]
-    public bool isReplaying;
     [SerializeField] private int replayFrame;
     [SerializeField] private int replayIdx;
 
@@ -26,10 +25,8 @@ public class CommandInvoker : MonoBehaviour
     [SerializeField] private int delayFrame;
     [SerializeField] private int commandIdx;
 
-    [SerializeField] private SortedList<int, ICommand> recordedCommands = new SortedList<int, ICommand>();
     [SerializeField] private Queue<ControllerSnapshot> snapshots = new Queue<ControllerSnapshot>();
     [SerializeField] private int snapshotInterval;
-
     private void Update()
     {
         InputHadle();
@@ -40,42 +37,41 @@ public class CommandInvoker : MonoBehaviour
         if (!GameManager.instance.IsPlaying())
             return;
 
-        if (isRecording)
+        if (!GameManager.instance.gameStateFlag[(int)GameState.REPLAY])
         {
             recordingFrame++;
             SaveSnapshot();
         }
-
-        if (isReplaying)
+        else
         {
             replayFrame++;
 
-            if (recordedCommands.Count > 0 && recordedCommands.Count > replayIdx)
+            if (DataManager.instance.recordedCommands.Count > 0 && DataManager.instance.recordedCommands.Count > replayIdx)
             {
-                if (replayFrame == recordedCommands.Keys[replayIdx])
+                if (replayFrame == DataManager.instance.recordedCommands.Keys[replayIdx])
                 {
-                    Debug.Log($"replay Time : {replayFrame}");
-                    Debug.Log($"reply command : {recordedCommands.Values[replayIdx]}");
+                    //Debug.Log($"replay Time : {replayFrame}");
+                    //Debug.Log($"reply command : {DataManager.instance.recordedCommands.Values[replayIdx]}");
 
-                    recordedCommands.Values[replayIdx++].Execute(controller[(int)ControllerType.PLAYER]);
+                    DataManager.instance.recordedCommands.Values[replayIdx++].Execute(controller[(int)ControllerType.PLAYER]);
                     //recordedCommands.RemoveAt(0);
                 }
             }
-            else
-            {
-                isReplaying = false;
-            }
+            //else
+            //{
+            //    isReplaying = false;
+            //}
         }
 
         if(isBoss)
         {
             bossFrame++;
 
-            if (recordedCommands.Count > 0 && recordedCommands.Count > commandIdx)
+            if (DataManager.instance.recordedCommands.Count > 0 && DataManager.instance.recordedCommands.Count > commandIdx)
             {
-                if (bossFrame == recordedCommands.Keys[commandIdx])
+                if (bossFrame == DataManager.instance.recordedCommands.Keys[commandIdx])
                 {
-                    recordedCommands.Values[commandIdx++].Execute(controller[(int)ControllerType.BOSS_AI]);
+                    DataManager.instance.recordedCommands.Values[commandIdx++].Execute(controller[(int)ControllerType.BOSS_AI]);
                 }
             }
         }
@@ -83,29 +79,29 @@ public class CommandInvoker : MonoBehaviour
 
     public void InputHadle()
     {
-        if (GameManager.instance.IsPlaying() && !isReplaying)
+        if (GameManager.instance.IsPlaying() && !GameManager.instance.gameStateFlag[(int)GameState.REPLAY])
         {
             if (Input.GetKeyDown(KeyCode.Space))
                 ExecuteCommand(new JumpCommand());
 
             if (Input.GetKeyDown(KeyCode.LeftArrow))
-                ExecuteCommand(new RotateCommand(Command.ROTATE_LEFT));
+                ExecuteCommand(new RotateCommand(CommandType.ROTATE_LEFT));
 
             if (Input.GetKeyDown(KeyCode.RightArrow))
-                ExecuteCommand(new RotateCommand(Command.ROTATE_RIGHT));
+                ExecuteCommand(new RotateCommand(CommandType.ROTATE_RIGHT));
 
             if (Input.GetKeyDown(KeyCode.UpArrow))
                 ExecuteCommand(new RecoverDirCommand());
         }
     }
 
-    public void ExecuteCommand(ICommand command)
+    public void ExecuteCommand(Command command)
     {
         command.Execute(controller[(int)ControllerType.PLAYER]);
 
-        if (isRecording)
+        if (!GameManager.instance.gameStateFlag[(int)GameState.REPLAY])
         {
-            recordedCommands.Add(recordingFrame, command);
+            DataManager.instance.recordedCommands.Add(recordingFrame, command);
             //string str = "";
             //for (int i = 0; i < recordedCommands.Count; i++)
             //{
@@ -117,25 +113,25 @@ public class CommandInvoker : MonoBehaviour
 
     public void OnJumpButtonPressed()
     {
-        if (GameManager.instance.IsPlaying() && !isReplaying)
+        if (GameManager.instance.IsPlaying() && !GameManager.instance.gameStateFlag[(int)GameState.REPLAY])
             ExecuteCommand(new JumpCommand());
     }
 
     public void OnLeftRotateButtonPressed()
     {
-        if (GameManager.instance.IsPlaying() && !isReplaying)
-            ExecuteCommand(new RotateCommand(Command.ROTATE_LEFT));
+        if (GameManager.instance.IsPlaying() && !GameManager.instance.gameStateFlag[(int)GameState.REPLAY])
+            ExecuteCommand(new RotateCommand(CommandType.ROTATE_LEFT));
     }
 
     public void OnRightRotateButtonPressed()
     {
-        if (GameManager.instance.IsPlaying() && !isReplaying)
-            ExecuteCommand(new RotateCommand(Command.ROTATE_RIGHT));
+        if (GameManager.instance.IsPlaying() && !GameManager.instance.gameStateFlag[(int)GameState.REPLAY])
+            ExecuteCommand(new RotateCommand(CommandType.ROTATE_RIGHT));
     }
 
     public void OnMoveButtonPressed()
     {
-        if (GameManager.instance.IsPlaying() && !isReplaying)
+        if (GameManager.instance.IsPlaying() && !GameManager.instance.gameStateFlag[(int)GameState.REPLAY])
             ExecuteCommand(new RecoverDirCommand());
     }
 
@@ -161,10 +157,10 @@ public class CommandInvoker : MonoBehaviour
         snapshot.PasteToController(controller[(int)ControllerType.BOSS_AI]);
         
         //delay 프레임에 가장 가까운 명령어 찾기
-        commandIdx = recordedCommands.Count;
-        for (int i = 0; i < recordedCommands.Count; i++)
+        commandIdx = DataManager.instance.recordedCommands.Count;
+        for (int i = 0; i < DataManager.instance.recordedCommands.Count; i++)
         {
-            if (recordedCommands.Keys[i] >= bossFrame)
+            if (DataManager.instance.recordedCommands.Keys[i] >= bossFrame)
             {
                 commandIdx = i;
                 break;
@@ -176,4 +172,6 @@ public class CommandInvoker : MonoBehaviour
     {
         isBoss = false;
     }
+
+
 }

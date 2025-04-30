@@ -50,10 +50,10 @@ public class BossController : Controller
     {
         switch (curCommand)
         {
-            case Command.ROTATE_LEFT:
-            case Command.ROTATE_RIGHT:
+            case CommandType.ROTATE_LEFT:
+            case CommandType.ROTATE_RIGHT:
                 return rotateState;
-            case Command.JUMP:
+            case CommandType.JUMP:
                 return jumpState;
             default:
                 return moveState;

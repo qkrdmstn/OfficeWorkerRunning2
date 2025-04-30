@@ -2,9 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RecoverDirCommand : ICommand
+public class RecoverDirCommand : Command
 {
-    public void Execute(Controller controller)
+    public RecoverDirCommand()
+    {
+        command = CommandType.RECOVER_DIR;
+    }
+
+    public override void Execute(Controller controller)
     {
         if (controller.isJump)
             controller.jumpState.RecoverMoveDir();
@@ -12,7 +17,7 @@ public class RecoverDirCommand : ICommand
             controller.moveState.RecoverMoveDir();
     }
 
-    public void Undo(Controller controller)
+    public override void Undo(Controller controller)
     {
     }
 }

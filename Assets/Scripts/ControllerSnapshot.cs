@@ -18,7 +18,7 @@ public class ControllerSnapshot
     [Header("State boolean")]
     public bool isJump;
     public bool isRotate;
-    public Command curCommand;
+    public CommandType curCommand;
     public StateType currentStateType;
 
     public ControllerSnapshot(int frame, Controller controller)
