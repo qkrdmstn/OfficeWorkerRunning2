@@ -8,11 +8,14 @@ public class BossController : Controller
 
 
     #endregion
+    [Header("Boss info")]
+    [SerializeField] private bool isBoss;
+    [SerializeField] private int bossFrame;
+    [SerializeField] private int commandIdx;
     [SerializeField] float despawnDelay = 5.0f;
     [SerializeField] float deadDist = 0.2f;
     private Transform playerTransform;
     private PlayerController playerController;
-    private CommandInvoker commandInvoker;
     private Coroutine despawnCoroutine;
 
     public float soundPeriod;
@@ -21,7 +24,6 @@ public class BossController : Controller
     protected override void OnAwake()
     {
         base.OnAwake();
-        commandInvoker = FindObjectOfType<CommandInvoker>();
         playerController = FindObjectOfType<PlayerController>();
         playerTransform = playerController.gameObject.transform;
     }
@@ -43,6 +45,19 @@ public class BossController : Controller
         {
             SoundManager.instance.Play("BossSound");
             soundTimer = soundPeriod;
+        }
+
+        if (isBoss)
+        {
+            bossFrame++;
+
+            if (DataManager.instance.recordedCommands.Count > 0 && DataManager.instance.recordedCommands.Count > commandIdx)
+            {
+                if (bossFrame == DataManager.instance.recordedCommands.Keys[commandIdx])
+                {
+                    DataManager.instance.recordedCommands.Values[commandIdx++].Execute(this);
+                }
+            }
         }
     }
 
@@ -67,19 +82,40 @@ public class BossController : Controller
         {
             if (despawnCoroutine != null)
                 StopCoroutine(despawnCoroutine);
-            commandInvoker.StopBoss();
+            isBoss = false;
         }
 
         //보스 활성화 및 초기화
         gameObject.SetActive(true);
-        commandInvoker.StartBossPlayback();
+        StartBossPlayback();
         despawnCoroutine = StartCoroutine(DespawnAfterDelay());
+    }
+
+    public void StartBossPlayback()
+    {
+        isBoss = true;
+        bossFrame = DataManager.instance.recordingFrame - DataManager.instance.delayFrame;
+
+        //sanpshot에서 복원
+        ControllerSnapshot snapshot = DataManager.instance.snapshots.Dequeue();
+        snapshot.PasteToController(this);
+
+        //delay 프레임에 가장 가까운 명령어 찾기
+        commandIdx = DataManager.instance.recordedCommands.Count;
+        for (int i = 0; i < DataManager.instance.recordedCommands.Count; i++)
+        {
+            if (DataManager.instance.recordedCommands.Keys[i] >= bossFrame)
+            {
+                commandIdx = i;
+                break;
+            }
+        }
     }
 
     IEnumerator DespawnAfterDelay()
     {
         yield return new WaitForSeconds(despawnDelay);
         gameObject.SetActive(false);
-        commandInvoker.StopBoss();
+        isBoss = false;
     }
 }

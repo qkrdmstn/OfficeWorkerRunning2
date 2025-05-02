@@ -68,5 +68,35 @@ public class ControllerSnapshot
                 break;
         }
     }
+
+    public void PastePositionToController(Controller controller)
+    {
+        controller.facingDir = facingDir;
+        controller.moveSpeed = moveSpeed;
+        controller.rotateSpeed = rotateSpeed;
+        controller.gameObject.transform.position = position;
+        controller.gameObject.transform.rotation = rotation;
+    }
+
+    public void PasteStateToController(Controller controller)
+    {
+        controller.isJump = isJump;
+        controller.isRotate = isRotate;
+        controller.curCommand = curCommand;
+
+        // PasteToController
+        switch (currentStateType)
+        {
+            case StateType.Move:
+                controller.stateMachine.Initialize(controller.moveState);
+                break;
+            case StateType.Rotate:
+                controller.stateMachine.Initialize(controller.rotateState);
+                break;
+            case StateType.Jump:
+                controller.stateMachine.Initialize(controller.jumpState);
+                break;
+        }
+    }
 }
 

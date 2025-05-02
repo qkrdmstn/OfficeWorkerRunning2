@@ -10,9 +10,10 @@ public class ReadyUIController : MonoBehaviour
 
     void Awake()
     {
-        GameManager.instance.OnResume += StartReadyUI;
-        GameManager.instance.OnPause += StopReadyUI;
         StageManager.instance.StageLoadCompleted += StartReadyUI;
+        GameManager.instance.OnResume += StartReadyUI;
+        GameManager.instance.OnDelayRevive += StartReadyUI;
+        GameManager.instance.OnPause += StopReadyUI;
     }
 
     public void StartReadyUI()
@@ -52,6 +53,7 @@ public class ReadyUIController : MonoBehaviour
     private void OnDestroy()
     {
         GameManager.instance.OnResume -= StartReadyUI;
+        GameManager.instance.OnDelayRevive -= StartReadyUI;
         GameManager.instance.OnPause -= StopReadyUI;
     }
 }

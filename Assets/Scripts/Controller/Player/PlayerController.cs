@@ -21,6 +21,7 @@ public class PlayerController : Controller
     #endregion 
 
     public float animDelay = 0.0f;
+    private ControllerSnapshot snapshot;
 
     protected override void OnAwake()
     {
@@ -37,11 +38,29 @@ public class PlayerController : Controller
 
         moveSpeed += GameManager.instance.stageIndex * 0.2f;
         rotateSpeed += GameManager.instance.stageIndex * 1.0f;
+
+        GameManager.instance.OnRevive += StartPlayerPlayback;
+        GameManager.instance.OnDelayRevive += StartPlayer;
+
     }
 
     protected override void OnUpdate()
     {
         base.OnUpdate();
+    }
+
+    public void StartPlayerPlayback()
+    {
+        //sanpshot에서 복원
+        animator.SetBool("IsGameOver", false);
+        animator.SetBool("IsMove", true);
+        snapshot = DataManager.instance.snapshots.Dequeue();
+        snapshot.PastePositionToController(this);
+    }
+
+    public void StartPlayer()
+    {
+        snapshot.PasteStateToController(this);
     }
 
     public override State GetStateByCurrentCommand()
@@ -64,5 +83,11 @@ public class PlayerController : Controller
             stateMachine.ChangeState(victoryState);
         else
             stateMachine.ChangeState(deadState);
+    }
+
+    private void OnDestroy()
+    {
+        GameManager.instance.OnRevive -= StartPlayerPlayback;
+        GameManager.instance.OnDelayRevive -= StartPlayer;
     }
 }

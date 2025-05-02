@@ -12,6 +12,7 @@ public enum GameState
     CLEAR,
     OVER,
     REPLAY,
+    REVIVE,
 }
 
 public enum SceneName
@@ -22,15 +23,23 @@ public enum SceneName
 
 public class GameManager : MonoBehaviour
 {
+    [Header("Stage info")]
     public int stageIndex;
     public int numOfStage = 30;
+
+    [Header("State info")]
     public bool[] gameStateFlag = new bool[5];
+
+    [Header("Revive info")]
+    public float reviveDelay = 0.5f;
 
     public static GameManager instance;
     public event Action OnGameClear;
     public event Action OnGameOver;
     public event Action OnPause;
     public event Action OnResume;
+    public event Action OnRevive;
+    public event Action OnDelayRevive;
 
     private void Awake()
     {
@@ -60,6 +69,7 @@ public class GameManager : MonoBehaviour
 
     public void StartStage()
     {
+        DataManager.instance.ClearData();
         LoadScene(SceneName.Stage);
     }
 
@@ -82,6 +92,8 @@ public class GameManager : MonoBehaviour
             else 
                 clipName += "Chaos";
         }
+
+        SoundManager.instance.Stop(SoundType.TIMER);
         SoundManager.instance.Play(clipName, SoundType.BGM, true);
     }
 
@@ -96,7 +108,7 @@ public class GameManager : MonoBehaviour
         SoundManager.instance.Stop(SoundType.TIMER);
         SoundManager.instance.Play("ClearSound");
 
-        if (!gameStateFlag[(int)GameState.REPLAY])
+        if (!gameStateFlag[(int)GameState.REPLAY] && !gameStateFlag[(int)GameState.REVIVE])
             DataManager.instance.SaveReplayData();
         StartCoroutine(GameClearDelay(player.animDelay));
     }
@@ -152,13 +164,34 @@ public class GameManager : MonoBehaviour
         SoundManager.instance.Stop(SoundType.SFX);
         SoundManager.instance.Stop(SoundType.TIMER);
         LoadScene(SceneName.Main);
+
+        DataManager.instance.ClearData();
     }
 
     public void Replay()
     {
-        DataManager.instance.LoadReplayData();
-        LoadScene(SceneName.Stage);
-        gameStateFlag[(int)GameState.REPLAY] = true;
+        if (DataManager.instance.LoadReplayData())
+        {
+            LoadScene(SceneName.Stage);
+            gameStateFlag[(int)GameState.REPLAY] = true;
+        }
+    }
+
+    public void Revive()
+    {
+        Time.timeScale = 1.0f;
+        gameStateFlag[(int)GameState.REVIVE] = true;
+        gameStateFlag[(int)GameState.OVER] = false;
+        OnRevive.Invoke();
+
+        StartCoroutine(DelayRevive());
+    }
+
+    private IEnumerator DelayRevive()
+    {
+        yield return new WaitForSecondsRealtime(reviveDelay); // 애니메이션 시간만큼 대기
+        Time.timeScale = 0f;
+        OnDelayRevive.Invoke(); // 이벤트 호출
     }
 
     public void NextStage()
@@ -182,7 +215,7 @@ public class GameManager : MonoBehaviour
 
     public void InitGameState()
     {
-        for(int i=0; i<(int)GameState.OVER; i++)
+        for(int i=0; i<=(int)GameState.REVIVE; i++)
             gameStateFlag[i] = false;
     }
 }

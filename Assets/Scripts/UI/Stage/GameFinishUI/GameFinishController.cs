@@ -48,7 +48,9 @@ public class GameFinishController : MonoBehaviour
     public void OnReviveClicked()
     {
         //Todo. 살아나기 구현
+        GameManager.instance.Revive();
         SoundManager.instance.Play("ClickSound");
+        view.gameObject.SetActive(false);
     }
 
     public void OnRestartClicked()
