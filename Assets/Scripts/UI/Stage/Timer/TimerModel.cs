@@ -5,7 +5,7 @@ using UnityEngine;
 public class TimerModel
 {
     public float timeLimit { get; private set; }
-    public float elapsedTime { get; private set; }
+    public float elapsedTime { get; set; }
     public bool flag = false;
 
     public TimerModel(float _timeLimit)

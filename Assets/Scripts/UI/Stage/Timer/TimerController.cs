@@ -14,6 +14,7 @@ public class TimerController : MonoBehaviour
     {
         StageManager.instance.StageLoadCompleted += InitializeTimerUI;
         GameManager.instance.OnResume += TimerResume;
+        GameManager.instance.OnDelayRevive += InitializeTimerUI;
     }
 
     public void InitializeTimerUI()
@@ -46,5 +47,11 @@ public class TimerController : MonoBehaviour
     public void TimerResume()
     {
         model.flag = false;
+    }
+
+    void OnDestroy()
+    {
+        GameManager.instance.OnResume -= TimerResume;
+        GameManager.instance.OnDelayRevive -= InitializeTimerUI;
     }
 }
