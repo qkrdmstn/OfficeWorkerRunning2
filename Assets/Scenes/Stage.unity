@@ -3806,8 +3806,8 @@ MonoBehaviour:
   m_UpdateMethod: 0
   m_BlendUpdateMethod: 0
   m_DefaultBlend:
-    m_Style: 1
-    m_Time: 2
+    m_Style: 0
+    m_Time: 0.1
     m_CustomCurve:
       serializedVersion: 2
       m_Curve: []
@@ -7357,8 +7357,14 @@ PrefabInstance:
     - target: {fileID: 973256422082059499, guid: a72fa17641615f540ac0ad25e5d911c4,
         type: 3}
       propertyPath: stageIndex
-      value: 15
+      value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 973256422082059499, guid: a72fa17641615f540ac0ad25e5d911c4,
+        type: 3}
+      propertyPath: GameClearEffect
+      value: 
+      objectReference: {fileID: 1323810789808520, guid: 54d1facf24441b14a96622ea8d171191,
+        type: 3}
     - target: {fileID: 2974076192850657527, guid: a72fa17641615f540ac0ad25e5d911c4,
         type: 3}
       propertyPath: m_LocalPosition.x

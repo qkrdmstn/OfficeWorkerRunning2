@@ -29,6 +29,7 @@ public class GameManager : MonoBehaviour
 
     [Header("State info")]
     public bool[] gameStateFlag = new bool[5];
+    public GameObject GameClearEffect;
 
     [Header("Revive info")]
     public float reviveDelay = 0.5f;
@@ -103,8 +104,13 @@ public class GameManager : MonoBehaviour
             return;
         gameStateFlag[(int)GameState.CLEAR] = true;
         PlayerController player = FindObjectOfType<PlayerController>();
-        player.GameEnd(true);
+        PlayerFollowCamera camera = FindObjectOfType<PlayerFollowCamera>();
 
+        player.GameEnd(true);
+        camera.RotateCameraAroundPlayer();
+        Instantiate(GameClearEffect, player.transform.position + player.transform.up * 4f + player.transform.right * 4, Quaternion.identity);
+        Instantiate(GameClearEffect, player.transform.position + player.transform.up * 4f - player.transform.right * 4, Quaternion.identity);
+        
         SoundManager.instance.Stop(SoundType.TIMER);
         SoundManager.instance.Play("ClearSound");
 
