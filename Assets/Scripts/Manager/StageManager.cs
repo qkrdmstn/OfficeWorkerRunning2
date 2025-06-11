@@ -99,14 +99,16 @@ public class StageManager : MonoBehaviour
                     if (mapData[i, j] == MapData.MONEY)
                         yPos = 0.7f;
 
-                    GameObject item = Instantiate(itemPrefabs[(int)mapData[i, j] - 1], GetGridPos(i, yPos, j), Quaternion.identity);
-                    item.name = "(" + i + "," + j + ")";
-                    item.transform.parent = itemParents[(int)mapData[i, j] - 1].transform;
-
-                    if (mapData[i,j] == MapData.MONEY)
+                    if (mapData[i,j] != MapData.FILE_STACK)
                     {
-                        moneyDictionary.Add(new Vector2Int(i, j), item);
-                        totalMoney++;
+                        GameObject item = Instantiate(itemPrefabs[(int)mapData[i, j] - 1], GetGridPos(i, yPos, j), Quaternion.identity);
+                        item.name = mapData[i, j].ToString() + " (" + i + "," + j + ")";
+                        item.transform.parent = itemParents[(int)mapData[i, j] - 1].transform;
+                        if (mapData[i, j] == MapData.MONEY)
+                        {
+                            moneyDictionary.Add(new Vector2Int(i, j), item);
+                            totalMoney++;
+                        }
                     }
                 }
                 else if (mapData[i, j] == MapData.START_POS)
@@ -117,6 +119,11 @@ public class StageManager : MonoBehaviour
 
                     //플레이어 시작 방향 설정
                     SetStartDir(i, j);
+                }
+
+                if (mapData[i, j] != MapData.FILE_STACK)
+                {
+                    GameObject.Find("FILE_STACK (" + i + "," + j + ")").SetActive(false);
                 }
             }
         }

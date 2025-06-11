@@ -35,8 +35,13 @@ public class PlayerInteraction : MonoBehaviour
         {
             int x, y; //Keyname split
             string keyName = collision.name;
-            keyName = keyName.Trim('(', ')');
-            string[] parts = keyName.Split(',');
+            // 괄호 안의 문자열만 추출
+            int startIndex = keyName.IndexOf('(') + 1;
+            int endIndex = keyName.IndexOf(')');
+            string coordinates = keyName.Substring(startIndex, endIndex - startIndex);
+
+            // 쉼표로 분리
+            string[] parts = coordinates.Split(',');
             x = int.Parse(parts[0]);
             y = int.Parse(parts[1]);
 
