@@ -16,7 +16,7 @@ GameObject:
   m_TagString: Mail
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &6073475034079761606
 Transform:
@@ -145,6 +145,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: MailModel
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: e9f03912e3fb1cf4794412e6821de753,
+        type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

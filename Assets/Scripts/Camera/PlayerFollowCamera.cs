@@ -40,7 +40,7 @@ public class PlayerFollowCamera : MonoBehaviour
             this.transform.RotateAround(target.position, target.up, 180 * Time.fixedDeltaTime);
             if (t > 1f)
             {
-                Vector3 p = target.position + new Vector3(0, 1.5f, 4f);
+                this.transform.position = target.position + target.forward * 4.0f + Vector3.up * 2.0f;
                 break;
             }
             yield return new WaitForFixedUpdate();
