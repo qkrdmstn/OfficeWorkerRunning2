@@ -13,6 +13,11 @@ public class PlayerFollowCamera : MonoBehaviour
         flag = false;
     }
 
+    private void Start()
+    {
+        GameManager.instance.OnGameClearEffect += (t) => RotateCameraAroundPlayer();
+    }
+
     public void Update()
     {
         if (!flag)
@@ -45,5 +50,10 @@ public class PlayerFollowCamera : MonoBehaviour
             }
             yield return new WaitForFixedUpdate();
         }
+    }
+
+    private void OnDestory()
+    {
+        GameManager.instance.OnGameClearEffect -= (t) => RotateCameraAroundPlayer();
     }
 }

@@ -44,6 +44,12 @@ public class SoundManager : MonoBehaviour
             sfxDict.Add(sfxClips[i].name, sfxClips[i]);
     }
 
+    private void Start()
+    {
+        GameManager.instance.OnGameClearEffect += (t) => GameClearSound();
+        GameManager.instance.OnGameOverEffect += GameOverSound;
+    }
+
     public void Play(string clipName, SoundType type = SoundType.SFX, bool loop = false)
     {
         switch (type)
@@ -115,5 +121,23 @@ public class SoundManager : MonoBehaviour
                 sfxSource.Stop();
             }
         }
+    }
+
+    public void GameClearSound()
+    {
+        Stop(SoundType.TIMER);
+        Play("ClearSound");
+    }
+
+    public void GameOverSound()
+    {
+        Stop(SoundType.TIMER);
+        Play("DeadSound");
+    }
+
+    private void OnDestroy()
+    {
+        GameManager.instance.OnGameClearEffect -= (t) => GameClearSound();
+        GameManager.instance.OnGameOverEffect -= GameOverSound;
     }
 }

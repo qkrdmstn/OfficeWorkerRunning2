@@ -29,13 +29,14 @@ public class GameManager : MonoBehaviour
 
     [Header("State info")]
     public bool[] gameStateFlag = new bool[5];
-    public GameObject GameClearEffect;
 
     [Header("Revive info")]
     public float reviveDelay = 0.5f;
 
     public static GameManager instance;
+    public event Action<Transform> OnGameClearEffect;
     public event Action OnGameClear;
+    public event Action OnGameOverEffect;
     public event Action OnGameOver;
     public event Action OnPause;
     public event Action OnResume;
@@ -98,25 +99,20 @@ public class GameManager : MonoBehaviour
         SoundManager.instance.Play(clipName, SoundType.BGM, true);
     }
 
-    public void GameClear()
+    public void GameClear(Transform playerTransform)
     {
         if (gameStateFlag[(int)GameState.CLEAR])
             return;
         gameStateFlag[(int)GameState.CLEAR] = true;
-        PlayerController player = FindObjectOfType<PlayerController>();
-        PlayerFollowCamera camera = FindObjectOfType<PlayerFollowCamera>();
 
-        player.GameEnd(true);
-        camera.RotateCameraAroundPlayer();
-        Instantiate(GameClearEffect, player.transform.position + player.transform.up * 4f + player.transform.right * 4, Quaternion.identity);
-        Instantiate(GameClearEffect, player.transform.position + player.transform.up * 4f - player.transform.right * 4, Quaternion.identity);
-        
-        SoundManager.instance.Stop(SoundType.TIMER);
-        SoundManager.instance.Play("ClearSound");
-
+        OnGameClearEffect.Invoke(playerTransform);
         if (!gameStateFlag[(int)GameState.REPLAY] && !gameStateFlag[(int)GameState.REVIVE])
             DataManager.instance.SaveReplayData();
-        StartCoroutine(GameClearDelay(player.animDelay));
+    }
+
+    public void StartFinalClearSequence(float delay) // 플레이어가 호출할 창구
+    {
+        StartCoroutine(GameClearDelay(delay));
     }
 
     private IEnumerator GameClearDelay(float delay)
@@ -131,13 +127,12 @@ public class GameManager : MonoBehaviour
         if (gameStateFlag[(int)GameState.OVER])
             return;
         gameStateFlag[(int)GameState.OVER] = true;
-        PlayerController player = FindObjectOfType<PlayerController>();
-        player.GameEnd(false);
+        OnGameOverEffect.Invoke();
+    }
 
-        SoundManager.instance.Stop(SoundType.TIMER);
-        SoundManager.instance.Play("DeadSound");
-
-        StartCoroutine(GameOverDelay(player.animDelay));
+    public void StartFinalOverSequence(float delay) // 플레이어가 호출할 창구
+    {
+        StartCoroutine(GameOverDelay(delay));
     }
 
     private IEnumerator GameOverDelay(float delay)

@@ -16,8 +16,10 @@ public class DeadState : ControllerState
 
         PlayerController player = controller as PlayerController;
         if (player != null) player.animDelay = 3.1f;
+
         if(controller.controllerType == ControllerType.PLAYER)
             animator.SetBool("IsGameOver", true);
+        GameManager.instance.StartFinalOverSequence(player.animDelay);
     }
 
     public override void Update()

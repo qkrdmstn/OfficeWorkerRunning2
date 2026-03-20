@@ -23,6 +23,7 @@ public class VictoryState : ControllerState
                 player.animDelay = 1.8f;
         }
         if (controller.controllerType == ControllerType.PLAYER) animator.SetInteger("IsVictory", rand);
+        GameManager.instance.StartFinalClearSequence(player.animDelay);
     }
 
     public override void Update()

@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -24,7 +24,7 @@ public class RotateState : ControllerState
             nextDir = controller.facingDir + 1;
         nextDir %= 4;
 
-        // ¸ñÇ¥ ¹æÇâÀ» ÇâÇÏ´Â È¸Àü
+        // ëª©í‘œ ë°©í–¥ì„ í–¥í•˜ëŠ” íšŒì „
         targetRotation = Quaternion.LookRotation(Controller.dir[nextDir]);
     }
 
@@ -32,10 +32,10 @@ public class RotateState : ControllerState
     {
         base.Update();
 
-        // ÇöÀç ¹æÇâ¿¡¼­
+        // í˜„ì¬ ë°©í–¥ì—ì„œ
         Quaternion currentRotation = controller.transform.rotation;
 
-        // ½ÇÁ¦ È¸Àü Àû¿ë
+        // ì‹¤ì œ íšŒì „ ì ìš©
         controller.transform.rotation = Quaternion.RotateTowards(currentRotation, targetRotation, controller.rotateSpeed * Time.fixedDeltaTime);
 
         if (Quaternion.Angle(controller.transform.rotation, targetRotation) <= 0.05f)

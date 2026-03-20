@@ -18,7 +18,12 @@ public class PlayerController : Controller
     #region State
     public DeadState deadState { get; private set; }
     public VictoryState victoryState { get; private set; }
-    #endregion 
+    #endregion
+
+
+    // PlayerController ³»ºÎ
+    public void OnVictory() => GameEnd(true);
+    public void OnDefeat() => GameEnd(false);
 
     public float animDelay = 0.0f;
     private ControllerSnapshot snapshot;
@@ -39,9 +44,10 @@ public class PlayerController : Controller
         moveSpeed += GameManager.instance.stageIndex * 0.2f;
         rotateSpeed += GameManager.instance.stageIndex * 1.0f;
 
+        GameManager.instance.OnGameClearEffect += (t) => OnVictory();
+        GameManager.instance.OnGameOverEffect += OnDefeat;
         GameManager.instance.OnRevive += StartPlayerPlayback;
         GameManager.instance.OnDelayRevive += StartPlayer;
-
     }
 
     protected override void OnUpdate()
@@ -87,6 +93,9 @@ public class PlayerController : Controller
 
     private void OnDestroy()
     {
+
+        GameManager.instance.OnGameClearEffect -= (t) => OnVictory();
+        GameManager.instance.OnGameOverEffect -= OnDefeat;
         GameManager.instance.OnRevive -= StartPlayerPlayback;
         GameManager.instance.OnDelayRevive -= StartPlayer;
     }

@@ -178,6 +178,6 @@ public class StageManager : MonoBehaviour
         OnMoneyCollected.Invoke(GetGridPos(pos.x, 0f, pos.y));
 
         if (totalMoney == moneyCount)
-            GameManager.instance.GameClear();
+            GameManager.instance.GameClear(player.transform);
     }
 }

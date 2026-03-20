@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 
-public class CoffeeEffectManager : MonoBehaviour
+public class EffectManager : MonoBehaviour
 {
     [SerializeField] private Volume volume;
     private LensDistortion lensDistortion;

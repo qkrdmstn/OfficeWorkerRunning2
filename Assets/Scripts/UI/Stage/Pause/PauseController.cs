@@ -25,7 +25,7 @@ public class PauseController : MonoBehaviour
 
     public void OnPauseButtonClicked()
     {
-        GameManager.instance.Pause(); // ¶Ç´Â ½Ì±ÛÅæ/Find·Î ÂüÁ¶
+        GameManager.instance.Pause(); // ï¿½Ç´ï¿½ ï¿½Ì±ï¿½ï¿½ï¿½/Findï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         SoundManager.instance.Play("ClickSound");
     }
 

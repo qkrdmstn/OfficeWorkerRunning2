@@ -15,7 +15,7 @@ public class PlayerInteraction : MonoBehaviour
 
     [SerializeField] private PlayerController player;
     [SerializeField] private BossController boss;
-    [SerializeField] private CoffeeEffectManager coffeeEffectManager;
+    [SerializeField] private EffectManager coffeeEffectManager;
 
     [Header("Particles")]
     [SerializeField] private GameObject getMoneybyRuleEffect;
@@ -35,12 +35,12 @@ public class PlayerInteraction : MonoBehaviour
         {
             int x, y; //Keyname split
             string keyName = collision.name;
-            // °ýÈ£ ¾ÈÀÇ ¹®ÀÚ¿­¸¸ ÃßÃâ
+            // ï¿½ï¿½È£ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ú¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
             int startIndex = keyName.IndexOf('(') + 1;
             int endIndex = keyName.IndexOf(')');
             string coordinates = keyName.Substring(startIndex, endIndex - startIndex);
 
-            // ½°Ç¥·Î ºÐ¸®
+            // ï¿½ï¿½Ç¥ï¿½ï¿½ ï¿½Ð¸ï¿½
             string[] parts = coordinates.Split(',');
             x = int.Parse(parts[0]);
             y = int.Parse(parts[1]);
@@ -119,10 +119,10 @@ public class PlayerInteraction : MonoBehaviour
                 int nx = pos.x + dx[dir];
                 int ny = pos.y + dy[dir];
 
-                //¸Ê ¹ÛÀ¸·Î ³ª°¡µµ ½ÇÆÐ
+                //ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
                 if (OutOfMap(nx, ny, MAP_SIZE))
                     return false;
-                //µ·ÀÌ ¾Æ´Ñ °÷À» ¸¸³ª¸é ½ÇÆÐ
+                //ï¿½ï¿½ï¿½ï¿½ ï¿½Æ´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
                 if (mapData[nx, ny] != MapData.MONEY && mapData[nx, ny] != MapData.DEAD_MONEY)
                     return false;
                 if (visited[nx, ny])
