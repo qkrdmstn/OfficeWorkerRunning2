@@ -48203,7 +48203,7 @@ GameObject:
   - component: {fileID: 731105273}
   - component: {fileID: 731105272}
   m_Layer: 0
-  m_Name: CoffeeEffectManager
+  m_Name: EffectManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -48224,6 +48224,8 @@ MonoBehaviour:
   volume: {fileID: 2095710372}
   intensity: -0.7
   duration: 2
+  gameClearEffect: {fileID: 1323810789808520, guid: 54d1facf24441b14a96622ea8d171191,
+    type: 3}
 --- !u!4 &731105273
 Transform:
   m_ObjectHideFlags: 0

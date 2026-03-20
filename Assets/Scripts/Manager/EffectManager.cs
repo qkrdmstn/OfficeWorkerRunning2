@@ -12,12 +12,19 @@ public class EffectManager : MonoBehaviour
     [SerializeField] private float intensity = -0.7f;
     [SerializeField] private float duration = 2.0f;
 
+    [SerializeField] private GameObject gameClearEffect;
+
     private void Awake()
     {
         if (volume.profile.TryGet(out lensDistortion))
         {
             lensDistortion.intensity.value = 0f;
         }
+    }
+
+    private void Start()
+    {
+        GameManager.instance.OnGameClearEffect += GameClearEffect;
     }
 
     public void TriggerEffect()
@@ -37,5 +44,16 @@ public class EffectManager : MonoBehaviour
 
         // 효과 원복
         lensDistortion.intensity.Override(0f);
+    }
+
+    public void GameClearEffect(Transform playerTransform)
+    {
+        Instantiate(gameClearEffect, playerTransform.position + playerTransform.up * 4f + playerTransform.right * 4, Quaternion.identity);
+        Instantiate(gameClearEffect, playerTransform.position + playerTransform.up * 4f - playerTransform.right * 4, Quaternion.identity);
+    }
+
+    private void OnDestory()
+    {
+        GameManager.instance.OnGameClearEffect -= GameClearEffect;
     }
 }
