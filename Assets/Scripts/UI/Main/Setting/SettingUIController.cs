@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -11,10 +11,10 @@ public class SettingUIController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //Todo. SoundManagerÀÇ ÇöÀç º¼·ıÀ¸·Î ¸ğµ¨ ÃÊ±âÈ­
+        //Todo. SoundManagerì˜ í˜„ì¬ ë³¼ë¥¨ìœ¼ë¡œ ëª¨ë¸ ì´ˆê¸°í™”
         model = new SettingUIModel(SoundManager.instance.bgmVolume, SoundManager.instance.sfxVolume);
 
-        //¾À ÀüÈ¯ ½Ã, SoundManager -> model -> view·ÎÀÇ µ¥ÀÌÅÍ º¯°æ
+        //ì”¬ ì „í™˜ ì‹œ, SoundManager -> model -> viewë¡œì˜ ë°ì´í„° ë³€ê²½
         view.UpdateSliderValue(model.GetSoundVal(SoundType.SFX), model.GetSoundVal(SoundType.BGM));
     }
 
@@ -43,7 +43,7 @@ public class SettingUIController : MonoBehaviour
         SoundManager.instance.Play("ClickSound");
     }
 
-    //SliderÀÇ °ªÀÌ ¹Ù²î¸é, view->model·ÎÀÇ µ¥ÀÌÅÍ º¯°æ ¼öÇà
+    //Sliderì˜ ê°’ì´ ë°”ë€Œë©´, view->modelë¡œì˜ ë°ì´í„° ë³€ê²½ ìˆ˜í–‰
     public void OnSFXSliderValueChanged()
     {
         model.SetSoundVal(SoundType.SFX, view.GetSliderValue(SoundType.SFX));

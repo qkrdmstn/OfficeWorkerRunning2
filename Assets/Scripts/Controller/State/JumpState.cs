@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -42,7 +42,7 @@ public class JumpState : ControllerState
             animator.SetBool("IsJump", true);
         controller.ChangeCollisionLayer(jumpLayer);
 
-        // ÃÊ±â À§Ä¡ ¼³Á¤
+        // ì´ˆê¸° ìœ„ì¹˜ ì„¤ì •
         startPos = controller.transform.position;
         moveDir = controller.GetMoveDir();
         endPos = startPos + moveDir * jumpDistance;
@@ -50,7 +50,7 @@ public class JumpState : ControllerState
         curDist = 0f;
         jumpDuration = jumpDistance / moveSpeed;
 
-        // Æ÷¹°¼± °ø½Ä ±â¹Ý ÃÊ±â vy, Áß·Â °è»ê
+        // í¬ë¬¼ì„  ê³µì‹ ê¸°ë°˜ ì´ˆê¸° vy, ì¤‘ë ¥ ê³„ì‚°
         vy = (4f * jumpHeight) / jumpDuration;
         gravity = (8f * jumpHeight) / (jumpDuration * jumpDuration);
 
@@ -63,14 +63,14 @@ public class JumpState : ControllerState
 
         float dt = Time.fixedDeltaTime;
 
-        // ÀÌµ¿ °Å¸®, ¼Óµµ ¾÷µ¥ÀÌÆ®
+        // ì´ë™ ê±°ë¦¬, ì†ë„ ì—…ë°ì´íŠ¸
         curDist += moveSpeed * dt;
         vy -= gravity * dt;
 
         Vector3 velocity = moveDir * moveSpeed + Vector3.up * vy;
         controller.SetVelocity(velocity);
 
-        // ÂøÁö ÆÇÁ¤
+        // ì°©ì§€ íŒì •
         if (curDist >= jumpDistance)
         {
             Vector3 landPos = startPos + moveDir * jumpDistance;
@@ -97,12 +97,12 @@ public class JumpState : ControllerState
     {
         if (controller.moveDir < 0 && !controller.isBump)
         {
-            // ¹æÇâ ¹× °Å¸®, ¼Óµµ ¹ÝÀü
+            // ë°©í–¥ ë° ê±°ë¦¬, ì†ë„ ë°˜ì „
             (startPos, endPos) = (endPos, startPos); // swap
             curDist = jumpDistance - curDist;
-            controller.ToggleMoveDir();              // ³»ºÎ moveDir ÇÃ·¡±× ¹ÝÀü
-            moveDir = controller.GetMoveDir();       // ½ÇÁ¦ ¹æÇâ ¾÷µ¥ÀÌÆ®
-            vy *= -1;                                // ¼öÁ÷ ¼Óµµ ¹ÝÀü
+            controller.ToggleMoveDir();              // ë‚´ë¶€ moveDir í”Œëž˜ê·¸ ë°˜ì „
+            moveDir = controller.GetMoveDir();       // ì‹¤ì œ ë°©í–¥ ì—…ë°ì´íŠ¸
+            vy *= -1;                                // ìˆ˜ì§ ì†ë„ ë°˜ì „
         }
     }
 }

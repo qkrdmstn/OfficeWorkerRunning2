@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -25,7 +25,7 @@ public class PauseController : MonoBehaviour
 
     public void OnPauseButtonClicked()
     {
-        GameManager.instance.Pause(); // �Ǵ� �̱���/Find�� ����
+        GameManager.instance.Pause(); // 占실댐옙 占싱깍옙占쏙옙/Find占쏙옙 占쏙옙占쏙옙
         SoundManager.instance.Play("ClickSound");
     }
 

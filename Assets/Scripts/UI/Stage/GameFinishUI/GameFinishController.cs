@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -47,7 +47,7 @@ public class GameFinishController : MonoBehaviour
 
     public void OnReviveClicked()
     {
-        //Todo. »ì¾Æ³ª±â ±¸Çö
+        //Todo. ì‚´ì•„ë‚˜ê¸° êµ¬í˜„
         GameManager.instance.Revive();
         SoundManager.instance.Play("ClickSound");
         view.gameObject.SetActive(false);

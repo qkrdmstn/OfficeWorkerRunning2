@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -24,7 +24,7 @@ public class MoveState : ControllerState
 
         controller.SetVelocity(controller.GetMoveDir() * controller.moveSpeed);
 
-        //¸ñÇ¥ À§Ä¡¿¡ µµ´ŞÇÏ¸é, ´ÙÀ½ ¸í·É È®ÀÎ
+        //ëª©í‘œ ìœ„ì¹˜ì— ë„ë‹¬í•˜ë©´, ë‹¤ìŒ ëª…ë ¹ í™•ì¸
         if (Vector3.Distance(controller.transform.position, nextGridCenter) < 0.1f)
         {
             controller.isBump = false;

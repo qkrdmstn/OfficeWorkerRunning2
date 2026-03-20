@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,7 +11,7 @@ public class MiniMapView : MonoBehaviour
     public GameObject iconPrefab;
     public Transform iconParent;
 
-    [Header("World ¡æ MiniMap ºñÀ²")]
+    [Header("World â†’ MiniMap ë¹„ìœ¨")]
     private float worldToMapScale;
 
     public void SetWorldToMapScale(float _worldToMapScale)

@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -22,7 +22,7 @@ public class MiniMapController : MonoBehaviour
         if (model == null || view == null)
             return;
         
-        // ÇÃ·¹ÀÌ¾î ¾ÆÀÌÄÜ À§Ä¡ ¾÷µ¥ÀÌÆ®
+        // í”Œë ˆì´ì–´ ì•„ì´ì½˜ ìœ„ì¹˜ ì—…ë°ì´íŠ¸
         Vector3 playerPos = model.GetPlayerPosition();
         view.UpdatePlayerIcon(playerPos);
     }
@@ -32,7 +32,7 @@ public class MiniMapController : MonoBehaviour
         model = new MiniMapModel(playerTransform);
         view.SetWorldToMapScale(miniMapRect.rect.width / (StageManager.gridDist * (StageManager.MAP_SIZE + 1)));
 
-        //view¿¡¼­ °¢ ¾ÆÀÌÅÛ¿¡ ´ëÇÑ ¹Ì´Ï¸Ê ¾ÆÀÌÄÜ »ı¼º
+        //viewì—ì„œ ê° ì•„ì´í…œì— ëŒ€í•œ ë¯¸ë‹ˆë§µ ì•„ì´ì½˜ ìƒì„±
         for (int i = (int)MapData.MONEY; i <= (int)MapData.COFFEE; i++)
             view.GenerateIcons((MapData)i, model.GetItemPositionList((MapData)i));
     }

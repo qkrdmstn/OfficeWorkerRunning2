@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -13,7 +13,7 @@ public class MoneyCountController : MonoBehaviour
     {
         model = new MoneyCountModel();
         StageManager.instance.StageLoadCompleted += UpdateMoneyCountUI;
-        StageManager.instance.OnMoneyCollected += _ => UpdateMoneyCountUI(); //¶÷´Ù½ÄÀ¸·Î ÆÄ¶ó¹ÌÅÍ Àü´Ş ¾ø¾Ö±â
+        StageManager.instance.OnMoneyCollected += _ => UpdateMoneyCountUI(); //ëŒë‹¤ì‹ìœ¼ë¡œ íŒŒë¼ë¯¸í„° ì „ë‹¬ ì—†ì• ê¸°
     }
 
     private void UpdateMoneyCountUI()
